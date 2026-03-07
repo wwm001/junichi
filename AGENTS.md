@@ -2,6 +2,7 @@
 
 ## Project overview
 This repository is for an Eiken Pre-1 study app.
+**英検準一級合格アプリ準一 (JUNICHI)**
 
 The product should start as a mobile-first PWA that runs as a static site on GitHub Pages.
 The architecture should also be prepared so the project can later be migrated to Capacitor and released as iOS and Android apps.
