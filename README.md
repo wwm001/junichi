@@ -1,4 +1,5 @@
-# Eiken Pre-1 Study App　'JUNICHI'
+# Eiken Pre-1 Study App
+**英検準一級合格アプリ準一 (JUNICHI)**
 
 A mobile-first study app for **Eiken Grade Pre-1** learners.
 
