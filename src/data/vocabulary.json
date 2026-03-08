@@ -1,0 +1,38 @@
+[
+  {
+    "id": "v1",
+    "word": "abandon",
+    "meaningJa": "見捨てる",
+    "distractorsJa": ["設立する", "改善する", "保護する"]
+  },
+  {
+    "id": "v2",
+    "word": "compile",
+    "meaningJa": "編集する",
+    "distractorsJa": ["解散する", "発見する", "追跡する"]
+  },
+  {
+    "id": "v3",
+    "word": "reluctant",
+    "meaningJa": "気が進まない",
+    "distractorsJa": ["積極的な", "有益な", "迅速な"]
+  },
+  {
+    "id": "v4",
+    "word": "convey",
+    "meaningJa": "伝える",
+    "distractorsJa": ["隠す", "延期する", "拒否する"]
+  },
+  {
+    "id": "v5",
+    "word": "substantial",
+    "meaningJa": "かなりの",
+    "distractorsJa": ["一時的な", "曖昧な", "例外的な"]
+  },
+  {
+    "id": "v6",
+    "word": "allocate",
+    "meaningJa": "割り当てる",
+    "distractorsJa": ["縮小する", "推測する", "回避する"]
+  }
+]
