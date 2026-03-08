@@ -1,129 +1,30 @@
-# Eiken Pre-1 Study App
-**英検準一級合格アプリ準一 (JUNICHI)**
+# 英検準一級合格アプリ準一 (JUNICHI)
 
-A mobile-first study app for **Eiken Grade Pre-1** learners.
+英検準一級対策向けのモバイルファースト学習アプリです。Phase 1 は **語彙オーディオクイズ** に特化した PWA (Progressive Web App) として実装されています。
 
-This project starts as a **Progressive Web App (PWA)** that can be deployed on **GitHub Pages**.  
-It is also intentionally structured so it can later be migrated to **Capacitor** and released as **iOS / Android apps**.
+## 実装済み (Phase 1 MVP)
 
----
+- Vite + React + TypeScript 構成
+- モバイルファースト UI
+- ローカル JSON 語彙データ読み込み
+- 4択日本語意味クイズ
+- Web Speech API (`speechSynthesis`) による英単語読み上げ
+- 学習進捗のローカル保存 (`localStorage`)
+- 間隔反復 (again / hard / good / easy)
+- シンプルな進捗表示
+- PWA 設定 (manifest / service worker / installable)
+- オフライン向けコア学習フロー (静的アセットキャッシュ)
+- GitHub Pages デプロイ用 GitHub Actions
+- コアロジックテスト (進捗・採点・SRS)
 
-## Project Goal
+## 画面イメージ
 
-Build a simple, fast, and practical study app for Eiken Pre-1 learners, starting with a lightweight MVP.
+- クイズカード: 単語表示、音声再生、4択回答
+- 結果表示: 正誤フィードバック
+- 復習評価: again / hard / good / easy
+- 進捗パネル: 回答数 / 正解数 / 正答率 / 即時復習数
 
-### Phase 1 goal
-
-Create a working PWA for short study sessions focused on vocabulary review.
-
-The Phase 1 MVP includes:
-
-- vocabulary audio quiz
-- local JSON vocabulary dataset
-- 4-choice Japanese meaning selection
-- local study progress saving
-- spaced repetition states:
-  - again
-  - hard
-  - good
-  - easy
-- simple progress screen
-- installable PWA
-- offline-friendly core study flow
-- GitHub Pages deployment
-
----
-
-## Why this project exists
-
-The app is designed for:
-
-- quick study during small gaps in the day
-- mobile-first learning
-- repeat review with low friction
-- future expansion into:
-  - listening
-  - reading
-  - writing
-  - speaking
-
-The long-term goal is not only a web app, but a study product that can eventually be released as a native mobile app.
-
----
-
-## Phase 1 Scope
-
-### Included
-
-- mobile-first PWA
-- vocabulary audio playback using browser speech synthesis
-- 4-choice quiz flow
-- progress persistence
-- spaced repetition logic
-- progress screen
-- static deployment on GitHub Pages
-
-### Not included yet
-
-- speech recognition
-- writing correction
-- speaking interview simulation
-- external APIs
-- paid APIs
-- user accounts
-- backend
-- cloud database
-- analytics
-- native iOS / Android implementation
-
----
-
-## Technical Direction
-
-This project is built with:
-
-- **Vite**
-- **React**
-- **TypeScript**
-
-Architecture principles:
-
-- keep domain logic separate from UI
-- isolate browser-specific code behind services/adapters
-- keep speech-related logic replaceable
-- keep data access modular
-- keep the codebase easy to migrate to Capacitor later
-
-The project should remain beginner-friendly, readable, and maintainable.
-
----
-
-## Planned Future Phases
-
-### Phase 2
-
-- listening practice
-- reading practice
-- more detailed progress views
-- larger dataset support
-
-### Phase 3
-
-- writing practice
-- speaking practice
-- interview simulation
-- native mobile app packaging with Capacitor
-
-### Later
-
-- App Store release
-- Google Play release
-
----
-
-## Repository Structure
-
-A typical structure for this project is expected to look like this:
+## フォルダ構成
 
 ```text
 .
@@ -133,178 +34,71 @@ A typical structure for this project is expected to look like this:
 ├─ src/
 │  ├─ app/
 │  ├─ components/
-│  ├─ features/
-│  │  └─ vocab/
-│  ├─ lib/
-│  │  ├─ speech/
-│  │  ├─ storage/
-│  │  └─ srs/
 │  ├─ data/
-│  │  └─ vocab.pre1.json
+│  ├─ domain/
+│  ├─ services/
+│  ├─ storage/
 │  └─ styles/
-├─ tests/
-├─ .github/
-│  └─ workflows/
-├─ AGENTS.md
+├─ .github/workflows/
 ├─ MIGRATION.md
-├─ README.md
-└─ package.json
+└─ README.md
 ```
 
-The exact structure may evolve, but the main principle is:
+## セットアップ
 
-**simple folders, modular logic, future-ready architecture**
+### 必要環境
 
----
-
-## Getting Started
-
-### Requirements
-
-- Node.js 20 or newer recommended
+- Node.js 20 以上推奨
 - npm
 
-### Install dependencies
+### インストール
 
 ```bash
 npm install
 ```
 
-### Start local development
+### ローカル起動
 
 ```bash
 npm run dev
 ```
 
-### Run tests
+起動後、表示された URL (通常 `http://localhost:5173`) を開きます。
+
+## テスト
 
 ```bash
 npm test
 ```
 
-### Build for production
+## 本番ビルド
 
 ```bash
 npm run build
 ```
 
----
+出力先は `dist/` です。
 
-## Deployment
+## GitHub Pages デプロイ
 
-The app is intended to be deployed as a **static site on GitHub Pages**.
+1. GitHub リポジトリの **Settings > Pages** で Source を **GitHub Actions** に設定
+2. `main` ブランチへ push
+3. `.github/workflows/deploy.yml` がテスト・ビルド・デプロイを実行
 
-### Expected deployment flow
+`GITHUB_ACTIONS=true` 環境で `vite.config.ts` の `base` が `/junichi/` になるため、GitHub Pages 配信パスに対応します。
 
-- push code to GitHub
-- GitHub Actions builds the app
-- built files are deployed to GitHub Pages
+## アーキテクチャ方針
 
-Exact deployment details may depend on the workflow file generated in this repository.
+- ドメインロジック (`src/domain`) と UI を分離
+- ブラウザ依存処理は `src/services` / `src/storage` に隔離
+- 音声機能は `SpeechService` として抽象化し、将来ネイティブ実装へ差し替え可能
+- データアクセスは `src/data` + storage 層に分離し、将来 API 化しやすい構造
 
----
+## 次フェーズで予定していること
 
-## PWA Notes
+- listening / reading / writing / speaking モジュールの追加
+- 学習分析画面の拡張
+- 問題セット拡張とカテゴリ管理
+- Capacitor への移行開始
 
-This project should support:
-
-- installable app behavior
-- manifest configuration
-- icons structure
-- offline-friendly core flow
-
-Because this starts as a browser-based PWA, browser support differences may affect some features.
-
-### Important note about speech
-
-Phase 1 uses **browser speech synthesis** for English playback.
-
-Speech recognition is intentionally excluded from Phase 1 because browser support varies significantly across devices and browsers.  
-If speech recognition becomes a core feature later, the preferred path is to migrate the project toward **Capacitor + native mobile speech APIs**.
-
----
-
-## Data Strategy
-
-Phase 1 uses a **local JSON vocabulary dataset**.
-
-Goals:
-
-- keep setup simple
-- avoid backend complexity
-- make the initial MVP easy to run and deploy
-- allow future dataset expansion without changing core logic
-
-Quiz content should not be hard-coded inside UI components.
-
----
-
-## Testing Strategy
-
-Tests should focus mainly on:
-
-- spaced repetition logic
-- scoring behavior
-- progress persistence logic
-
-The goal is reliable core logic without overly complex test infrastructure.
-
----
-
-## Documentation
-
-This repository should contain:
-
-- `README.md`
-  - project overview
-  - setup instructions
-  - development commands
-  - deployment notes
-- `AGENTS.md`
-  - rules and working instructions for Codex / contributors
-- `MIGRATION.md`
-  - future path from PWA to Capacitor-based mobile app release
-
----
-
-## Future Mobile App Release
-
-This project is intentionally designed so it can later be migrated to **Capacitor**.
-
-That future migration should make it easier to:
-
-- package the app for iOS
-- package the app for Android
-- replace browser-only implementations with native mobile implementations where needed
-- prepare for App Store / Google Play release
-
-See `MIGRATION.md` for the intended future path.
-
----
-
-## Development Priorities
-
-When working on this project, prioritize:
-
-1. working core study flow
-2. simple UX for smartphone users
-3. clear code structure
-4. easy GitHub Pages deployment
-5. future migration path to mobile apps
-
----
-
-## Current Status
-
-This repository is currently focused on **Phase 1 MVP**.
-
-Main target:
-
-**a working vocabulary audio quiz PWA for Eiken Pre-1 study**
-
----
-
-## License
-
-No license has been added yet.  
-This repository is currently under private / owner-controlled development unless stated otherwise later.
+詳細は `MIGRATION.md` を参照してください。
