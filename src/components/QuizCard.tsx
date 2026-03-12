@@ -7,6 +7,9 @@ interface QuizCardProps {
   showResult: boolean;
   onSpeak: () => void;
   speechAvailable: boolean;
+  speechReady: boolean;
+  speechStatusMessage: string | null;
+  voiceDebugLabel: string | null;
   onRate: (rating: ReviewRating) => void;
 }
 
@@ -17,6 +20,9 @@ export function QuizCard({
   showResult,
   onSpeak,
   speechAvailable,
+  speechReady,
+  speechStatusMessage,
+  voiceDebugLabel,
   onRate
 }: QuizCardProps): JSX.Element {
   return (
@@ -29,12 +35,22 @@ export function QuizCard({
       </header>
 
       <p className="word">{question.item.word}</p>
+
       {!speechAvailable && <p className="note">このブラウザでは音声再生が利用できません。</p>}
+
+      {speechAvailable && !speechReady && !speechStatusMessage && (
+        <p className="note">初回タップ時に音声を初期化します。反応しない場合はもう一度タップしてください。</p>
+      )}
+
+      {speechStatusMessage && <p className="note note-error">{speechStatusMessage}</p>}
+
+      {voiceDebugLabel && <p className="note note-debug">DEV voice: {voiceDebugLabel}</p>}
 
       <div className="choices">
         {question.choices.map((choice) => {
           const isCorrect = choice === question.item.meaningJa;
           const isSelected = selectedChoice === choice;
+
           const className = showResult
             ? isCorrect
               ? 'choice correct'
