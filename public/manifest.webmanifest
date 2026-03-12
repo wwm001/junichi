@@ -1,0 +1,23 @@
+{
+  "name": "英検準一級合格アプリ準一 (JUNICHI)",
+  "short_name": "JUNICHI",
+  "description": "英検準一級の語彙を短時間で学習するモバイル向けPWA",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f9fafb",
+  "theme_color": "#1f2937",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
