@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import vocabularyJson from '../data/vocabulary.json';
 import { ProgressPanel } from '../components/ProgressPanel';
 import { QuizCard } from '../components/QuizCard';
@@ -16,12 +16,40 @@ export function App(): JSX.Element {
   const [progress, setProgress] = useState<AppProgress>(() => progressStorage.load());
   const [selectedChoice, setSelectedChoice] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
+  const [speechStatusMessage, setSpeechStatusMessage] = useState<string | null>(null);
+  const [speechReady, setSpeechReady] = useState<boolean>(speechService.isReady());
+  const [voiceDebugLabel, setVoiceDebugLabel] = useState<string | null>(null);
 
   const currentItem = useMemo(() => selectNextItem(vocabulary, progress), [progress]);
   const question = useMemo(() => buildQuestion(currentItem), [currentItem]);
 
+  const speechAvailable = speechService.isAvailable();
+
+  const syncSpeechUi = useCallback((): void => {
+    setSpeechReady(speechService.isReady());
+
+    const voice = speechService.getSelectedVoiceInfo();
+    if (import.meta.env.DEV && voice) {
+      setVoiceDebugLabel(`${voice.name} (${voice.lang})`);
+    } else {
+      setVoiceDebugLabel(null);
+    }
+
+    setSpeechStatusMessage(speechService.getLastError());
+  }, []);
+
+  useEffect(() => {
+    syncSpeechUi();
+  }, [syncSpeechUi]);
+
+  useEffect(() => {
+    setSpeechStatusMessage(null);
+    syncSpeechUi();
+  }, [currentItem.id, syncSpeechUi]);
+
   const dueCount = useMemo(() => {
     const now = new Date();
+
     return vocabulary.filter((item) => {
       const entry = progress.entries[item.id] ?? createInitialProgress(item.id, now);
       return isDue(entry, now);
@@ -39,6 +67,7 @@ export function App(): JSX.Element {
     const updatedEntry = updateProgress(currentEntry, rating, now);
 
     const isCorrect = selectedChoice === currentItem.meaningJa;
+
     const nextProgress: AppProgress = {
       entries: {
         ...progress.entries,
@@ -52,6 +81,28 @@ export function App(): JSX.Element {
     setProgress(nextProgress);
     setSelectedChoice(null);
     setShowResult(false);
+    setSpeechStatusMessage(null);
+  };
+
+  const onSpeak = (): void => {
+    if (!speechAvailable) {
+      setSpeechStatusMessage('このブラウザでは音声再生を利用できません。');
+      return;
+    }
+
+    setSpeechStatusMessage(null);
+
+    // ユーザー操作の直後に初期化と再生を通すことで、
+    // スマホブラウザの音声再生制限に対応しやすくする。
+    speechService.init();
+    speechService.speak(question.item.word);
+
+    syncSpeechUi();
+
+    // voices 読み込みやモバイル側リトライ反映を拾うための再同期
+    window.setTimeout(syncSpeechUi, 150);
+    window.setTimeout(syncSpeechUi, 450);
+    window.setTimeout(syncSpeechUi, 900);
   };
 
   return (
@@ -65,8 +116,11 @@ export function App(): JSX.Element {
         showResult={showResult}
         onChoice={onChoice}
         onRate={onRate}
-        onSpeak={() => speechService.speak(question.item.word)}
-        speechAvailable={speechService.isAvailable()}
+        onSpeak={onSpeak}
+        speechAvailable={speechAvailable}
+        speechReady={speechReady}
+        speechStatusMessage={speechStatusMessage}
+        voiceDebugLabel={voiceDebugLabel}
       />
 
       <ProgressPanel
