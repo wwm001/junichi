@@ -53,8 +53,7 @@ export function createBrowserSpeechService(): SpeechService {
     const englishVoices = voices.filter((voice) => voice.lang.toLowerCase().startsWith('en'));
     const candidates = englishVoices.length > 0 ? englishVoices : voices;
 
-    const best = [...candidates].sort((a, b) => scoreVoice(b) - scoreVoice(a))[0];
-    return best ?? null;
+    return [...candidates].sort((a, b) => scoreVoice(b) - scoreVoice(a))[0] ?? null;
   };
 
   const waitForVoices = async (timeoutMs = 1500): Promise<void> => {
@@ -68,28 +67,27 @@ export function createBrowserSpeechService(): SpeechService {
 
     await new Promise<void>((resolve) => {
       const startedAt = Date.now();
+      let settled = false;
 
-      const cleanup = (): void => {
+      const finish = (): void => {
+        if (settled) return;
+        settled = true;
         synth.removeEventListener('voiceschanged', onVoicesChanged);
-        clearInterval(intervalId);
-      };
-
-      const complete = (): void => {
-        cleanup();
+        window.clearInterval(intervalId);
         selectedVoice = pickBestVoice();
-        ready = selectedVoice !== null;
+        ready = selectedVoice !== null || synth.getVoices().length > 0;
         resolve();
       };
 
       const onVoicesChanged = (): void => {
         if (synth.getVoices().length > 0) {
-          complete();
+          finish();
         }
       };
 
       const intervalId = window.setInterval(() => {
         if (synth.getVoices().length > 0 || Date.now() - startedAt >= timeoutMs) {
-          complete();
+          finish();
         }
       }, 100);
 
@@ -101,12 +99,19 @@ export function createBrowserSpeechService(): SpeechService {
     if (!synth) return;
 
     await new Promise<void>((resolve) => {
+      let settled = false;
+      const finish = (): void => {
+        if (settled) return;
+        settled = true;
+        resolve();
+      };
+
       const utterance = new SpeechSynthesisUtterance(' ');
       utterance.volume = 0;
       utterance.rate = 1;
       utterance.pitch = 1;
-      utterance.onend = () => resolve();
-      utterance.onerror = () => resolve();
+      utterance.onend = finish;
+      utterance.onerror = finish;
 
       try {
         synth.cancel();
@@ -115,10 +120,10 @@ export function createBrowserSpeechService(): SpeechService {
 
         window.setTimeout(() => {
           synth.cancel();
-          resolve();
+          finish();
         }, 120);
       } catch {
-        resolve();
+        finish();
       }
     });
   };
@@ -127,6 +132,14 @@ export function createBrowserSpeechService(): SpeechService {
     if (!synth) return false;
 
     return new Promise<boolean>((resolve) => {
+      let settled = false;
+      const finish = (ok: boolean): void => {
+        if (settled) return;
+        settled = true;
+        window.clearTimeout(failTimerId);
+        resolve(ok);
+      };
+
       const utterance = new SpeechSynthesisUtterance(text);
       const voice = selectedVoice ?? pickBestVoice();
 
@@ -145,7 +158,7 @@ export function createBrowserSpeechService(): SpeechService {
       const failTimerId = window.setTimeout(() => {
         if (!started) {
           synth.cancel();
-          resolve(false);
+          finish(false);
         }
       }, 1200);
 
@@ -153,23 +166,15 @@ export function createBrowserSpeechService(): SpeechService {
         started = true;
       };
 
-      utterance.onend = () => {
-        clearTimeout(failTimerId);
-        resolve(true);
-      };
-
-      utterance.onerror = () => {
-        clearTimeout(failTimerId);
-        resolve(false);
-      };
+      utterance.onend = () => finish(true);
+      utterance.onerror = () => finish(false);
 
       try {
         synth.cancel();
         synth.resume();
         synth.speak(utterance);
       } catch {
-        clearTimeout(failTimerId);
-        resolve(false);
+        finish(false);
       }
     });
   };
@@ -177,15 +182,20 @@ export function createBrowserSpeechService(): SpeechService {
   return {
     init: async () => {
       if (!synth) return;
+
       if (!initialized) {
         initialized = true;
         await unlockOnFirstInteraction();
       }
 
-      await waitForVoices();
+      if (!ready) {
+        await waitForVoices();
+      }
+
       if (!selectedVoice) {
         selectedVoice = pickBestVoice();
       }
+
       ready = selectedVoice !== null || synth.getVoices().length > 0;
     },
     isSupported: () => synth !== null,
