@@ -88,7 +88,7 @@ export function App(): JSX.Element {
   const onSpeak = (): void => {
     if (!speechAvailable) {
       setSpeechStatusMessage(
-        'この端末では音声再生が利用できないか、ブラウザ制限がかかっています。通常ブラウザで再読み込みして再試行してください。'
+        'このブラウザでは音声再生が利用できない可能性があります。Android では Chrome の利用を推奨します。'
       );
       return;
     }
@@ -109,6 +109,7 @@ export function App(): JSX.Element {
     <main className="app-shell">
       <h1>英検準一級合格アプリ準一 (JUNICHI)</h1>
       <p className="subtitle">短時間で語彙を反復学習できるモバイル向けPWA</p>
+      <p className="environment-note">推奨ブラウザ: Google Chrome（Android）</p>
 
       <QuizCard
         question={question}
