@@ -42,13 +42,13 @@ export function QuizCard({
 
       {!speechAvailable && (
         <p className="note" aria-live="polite">
-          この端末では音声再生が制限されている可能性があります。ボタンをタップして反応を確認してください。
+          このブラウザでは音声再生が制限される場合があります。音声学習には Chrome の利用を推奨します。
         </p>
       )}
 
       {speechAvailable && !speechReady && !speechStatusMessage && (
         <p className="note" aria-live="polite">
-          初回タップ時に音声を初期化します。反応しない場合はもう一度タップしてください。
+          初回タップ時に音声を初期化します。反応しない場合はもう一度タップしてください。Android では Chrome の利用を推奨します。
         </p>
       )}
 
