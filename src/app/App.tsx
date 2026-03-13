@@ -11,6 +11,7 @@ import { createBrowserProgressStorage } from '../storage/progressStorage';
 const vocabulary = vocabularyJson as VocabularyItem[];
 const speechService = createBrowserSpeechService();
 const progressStorage = createBrowserProgressStorage();
+const appBuildVersion = __APP_VERSION__;
 
 export function App(): JSX.Element {
   const [progress, setProgress] = useState<AppProgress>(() => progressStorage.load());
@@ -86,20 +87,19 @@ export function App(): JSX.Element {
 
   const onSpeak = (): void => {
     if (!speechAvailable) {
-      setSpeechStatusMessage('このブラウザでは音声再生を利用できません。');
+      setSpeechStatusMessage(
+        'この端末では音声再生が利用できないか、ブラウザ制限がかかっています。通常ブラウザで再読み込みして再試行してください。'
+      );
       return;
     }
 
     setSpeechStatusMessage(null);
 
-    // ユーザー操作の直後に初期化と再生を通すことで、
-    // スマホブラウザの音声再生制限に対応しやすくする。
     speechService.init();
     speechService.speak(question.item.word);
 
     syncSpeechUi();
 
-    // voices 読み込みやモバイル側リトライ反映を拾うための再同期
     window.setTimeout(syncSpeechUi, 150);
     window.setTimeout(syncSpeechUi, 450);
     window.setTimeout(syncSpeechUi, 900);
@@ -129,6 +129,8 @@ export function App(): JSX.Element {
         accuracy={computeAccuracy(progress)}
         dueCount={dueCount}
       />
+
+      <p className="build-version">build: {appBuildVersion}</p>
     </main>
   );
 }
