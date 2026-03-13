@@ -6,8 +6,10 @@ export interface SpeechVoiceInfo {
 export interface SpeechService {
   init: () => void;
   speak: (text: string) => void;
+  stop: () => void;
   isAvailable: () => boolean;
   isReady: () => boolean;
+  isSpeaking: () => boolean;
   getSelectedVoiceInfo: () => SpeechVoiceInfo | null;
   getLastError: () => string | null;
 }
@@ -23,7 +25,7 @@ const PREFERRED_VOICE_NAMES = [
 ];
 
 const FAILURE_MESSAGE =
-  'この端末では音声再生の初期化に失敗しました。もう一度タップしてください。';
+  'この端末では音声再生の初期化に失敗しました。もう一度タップしてください。Chrome の利用もお試しください。';
 
 const VOICE_WAIT_TIMEOUT_MS = 1200;
 const START_DETECT_TIMEOUT_MS = 900;
@@ -167,6 +169,8 @@ export function createBrowserSpeechService(): SpeechService {
     } catch {
       // no-op
     }
+
+    activeUtterance = null;
   };
 
   const buildUtterance = (text: string): SpeechSynthesisUtterance => {
@@ -279,11 +283,8 @@ export function createBrowserSpeechService(): SpeechService {
 
     if (attemptId !== speakAttemptId) return;
 
-    // voices が空でも default voice で発話を試す
     refreshVoices();
 
-    // モバイルで speak が user gesture 直後に安定しやすいように、
-    // micro-delay を入れて synthesis 状態を整える。
     window.setTimeout(() => {
       if (attemptId !== speakAttemptId) return;
       trySpeakNow(text, allowRetry, attemptId);
@@ -329,6 +330,10 @@ export function createBrowserSpeechService(): SpeechService {
       void speakInternal(text, true);
     },
 
+    stop: () => {
+      softResetSynth();
+    },
+
     isAvailable: () => {
       return isSpeechSupported();
     },
@@ -337,6 +342,12 @@ export function createBrowserSpeechService(): SpeechService {
       if (!isSpeechSupported()) return false;
       refreshVoices();
       return ready;
+    },
+
+    isSpeaking: () => {
+      const synth = getSynth();
+      if (!synth) return false;
+      return synth.speaking || synth.pending || activeUtterance !== null;
     },
 
     getSelectedVoiceInfo: () => {
