@@ -2,47 +2,23 @@
   font-family: 'Noto Sans JP', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   color: #111827;
   background: #f3f4f6;
-  line-height: 1.5;
-  font-synthesis-weight: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 * {
   box-sizing: border-box;
 }
 
-html {
-  background: #f3f4f6;
-}
-
 body {
   margin: 0;
-  min-width: 320px;
-}
-
-button,
-input,
-select,
-textarea {
-  font: inherit;
 }
 
 button {
-  cursor: pointer;
-}
-
-button:disabled {
-  cursor: not-allowed;
-}
-
-#root {
-  min-height: 100vh;
+  font: inherit;
+  touch-action: manipulation;
 }
 
 .app-shell {
-  max-width: 680px;
+  max-width: 640px;
   margin: 0 auto;
   padding: 1rem;
   display: grid;
@@ -51,27 +27,21 @@ button:disabled {
 
 h1 {
   margin: 0.5rem 0 0;
-  font-size: 1.45rem;
-  line-height: 1.35;
-}
-
-h2 {
-  margin: 0;
-  font-size: 1.05rem;
+  font-size: 1.4rem;
+  line-height: 1.4;
 }
 
 .subtitle {
   margin: 0;
-  color: #4b5563;
+  color: #374151;
   font-size: 0.95rem;
 }
 
 .card {
-  background: #ffffff;
-  border-radius: 16px;
+  background: #fff;
+  border-radius: 14px;
   padding: 1rem;
-  box-shadow: 0 4px 16px rgba(17, 24, 39, 0.08);
-  border: 1px solid rgba(209, 213, 219, 0.7);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .card-header {
@@ -79,93 +49,49 @@ h2 {
   justify-content: space-between;
   align-items: flex-start;
   gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
 }
 
 .word {
-  font-size: 1.9rem;
+  font-size: 1.8rem;
+  margin: 0.4rem 0 0.6rem;
   font-weight: 700;
-  letter-spacing: 0.01em;
-  margin: 0.9rem 0 0.5rem;
 }
 
 .speak-button {
   border: 0;
   background: #1f2937;
-  color: #ffffff;
-  border-radius: 12px;
-  padding: 0.65rem 0.9rem;
+  color: #fff;
+  border-radius: 10px;
+  padding: 0.7rem 0.9rem;
   min-height: 44px;
-  font-weight: 700;
-  white-space: nowrap;
-  transition:
-    transform 0.08s ease,
-    background-color 0.16s ease,
-    opacity 0.16s ease;
+  cursor: pointer;
 }
 
-.speak-button:hover:not(:disabled) {
-  background: #111827;
-}
-
-.speak-button:active:not(:disabled) {
-  transform: translateY(1px);
-}
-
-.speak-button:disabled {
-  opacity: 0.55;
-}
-
-.note {
-  margin: 0.35rem 0 0;
-  font-size: 0.92rem;
-  color: #4b5563;
-}
-
-.note-error {
-  color: #b91c1c;
-  font-weight: 600;
-}
-
-.note-debug {
-  color: #1d4ed8;
-  font-size: 0.85rem;
+.speak-button.is-unavailable {
+  background: #6b7280;
 }
 
 .choices,
 .review-grid {
   display: grid;
-  gap: 0.65rem;
-}
-
-.choices {
-  margin-top: 1rem;
+  gap: 0.6rem;
 }
 
 .choice,
 .review-grid button {
   border: 1px solid #d1d5db;
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 0.9rem 1rem;
+  background: #fff;
+  border-radius: 10px;
+  padding: 0.9rem;
   text-align: left;
   font-size: 1rem;
   min-height: 48px;
-  transition:
-    border-color 0.16s ease,
-    background-color 0.16s ease,
-    transform 0.08s ease,
-    box-shadow 0.16s ease;
-}
-
-.choice:hover:not(:disabled),
-.review-grid button:hover:not(:disabled) {
-  border-color: #9ca3af;
-  box-shadow: 0 2px 8px rgba(17, 24, 39, 0.06);
-}
-
-.choice:active:not(:disabled),
-.review-grid button:active:not(:disabled) {
-  transform: translateY(1px);
 }
 
 .choice.correct {
@@ -178,63 +104,48 @@ h2 {
   background: #fee2e2;
 }
 
-.review-buttons {
-  margin-top: 1rem;
-  padding-top: 0.9rem;
-  border-top: 1px solid #e5e7eb;
-}
-
 .review-buttons p {
-  margin: 0 0 0.6rem;
-  font-weight: 600;
-}
-
-.review-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0.8rem 0 0.5rem;
 }
 
 .progress-panel ul {
   margin: 0;
   padding-left: 1.2rem;
   display: grid;
-  gap: 0.38rem;
+  gap: 0.3rem;
 }
 
-.progress-panel li {
-  color: #1f2937;
+.note {
+  margin: 0.4rem 0 0.8rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 10px;
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-size: 0.92rem;
+  line-height: 1.5;
 }
 
-@media (max-width: 480px) {
-  .app-shell {
-    padding: 0.85rem;
-  }
+.note-error {
+  background: #fef2f2;
+  color: #991b1b;
+}
 
-  .card {
-    padding: 0.9rem;
-    border-radius: 14px;
-  }
+.note-debug {
+  background: #f3f4f6;
+  color: #374151;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.84rem;
+}
 
-  .card-header {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .speak-button {
-    width: 100%;
-  }
-
-  .word {
-    font-size: 1.7rem;
-  }
+.build-version {
+  margin: 0;
+  text-align: right;
+  color: #6b7280;
+  font-size: 0.78rem;
 }
 
 @media (min-width: 768px) {
   .app-shell {
-    padding: 2rem 1.25rem 3rem;
-    gap: 1.15rem;
-  }
-
-  .card {
-    padding: 1.2rem 1.25rem;
+    padding: 2rem;
   }
 }
