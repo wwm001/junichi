@@ -34,5 +34,113 @@
     "word": "allocate",
     "meaningJa": "割り当てる",
     "distractorsJa": ["縮小する", "推測する", "回避する"]
+  },
+  {
+    "id": "v7",
+    "word": "acute",
+    "meaningJa": "深刻な",
+    "distractorsJa": ["穏やかな", "形式的な", "平均的な"]
+  },
+  {
+    "id": "v8",
+    "word": "adverse",
+    "meaningJa": "不利な",
+    "distractorsJa": ["好意的な", "柔軟な", "純粋な"]
+  },
+  {
+    "id": "v9",
+    "word": "advocate",
+    "meaningJa": "支持する",
+    "distractorsJa": ["隠蔽する", "分離する", "短縮する"]
+  },
+  {
+    "id": "v10",
+    "word": "apparently",
+    "meaningJa": "どうやら",
+    "distractorsJa": ["意図的に", "徐々に", "必然的に"]
+  },
+  {
+    "id": "v11",
+    "word": "attain",
+    "meaningJa": "達成する",
+    "distractorsJa": ["拒絶する", "崩壊する", "延長する"]
+  },
+  {
+    "id": "v12",
+    "word": "coherent",
+    "meaningJa": "筋の通った",
+    "distractorsJa": ["断片的な", "派手な", "曖昧な"]
+  },
+  {
+    "id": "v13",
+    "word": "deteriorate",
+    "meaningJa": "悪化する",
+    "distractorsJa": ["改善する", "保存する", "統合する"]
+  },
+  {
+    "id": "v14",
+    "word": "dispute",
+    "meaningJa": "異議を唱える",
+    "distractorsJa": ["称賛する", "模倣する", "監督する"]
+  },
+  {
+    "id": "v15",
+    "word": "elaborate",
+    "meaningJa": "詳しく述べる",
+    "distractorsJa": ["省略する", "破壊する", "再現する"]
+  },
+  {
+    "id": "v16",
+    "word": "flourish",
+    "meaningJa": "栄える",
+    "distractorsJa": ["衰退する", "停滞する", "混乱する"]
+  },
+  {
+    "id": "v17",
+    "word": "inevitable",
+    "meaningJa": "避けられない",
+    "distractorsJa": ["偶然の", "臨時の", "自発的な"]
+  },
+  {
+    "id": "v18",
+    "word": "notion",
+    "meaningJa": "考え",
+    "distractorsJa": ["証拠", "境界", "手段"]
+  },
+  {
+    "id": "v19",
+    "word": "persistent",
+    "meaningJa": "粘り強い",
+    "distractorsJa": ["消極的な", "短命の", "断続的な"]
+  },
+  {
+    "id": "v20",
+    "word": "regulate",
+    "meaningJa": "規制する",
+    "distractorsJa": ["拡大する", "装飾する", "加速する"]
+  },
+  {
+    "id": "v21",
+    "word": "scarcely",
+    "meaningJa": "ほとんど〜ない",
+    "distractorsJa": ["確実に", "繰り返し", "主として"]
+  },
+  {
+    "id": "v22",
+    "word": "sustain",
+    "meaningJa": "維持する",
+    "distractorsJa": ["放棄する", "省略する", "推定する"]
+  },
+  {
+    "id": "v23",
+    "word": "tentative",
+    "meaningJa": "仮の",
+    "distractorsJa": ["確定した", "大胆な", "極端な"]
+  },
+  {
+    "id": "v24",
+    "word": "vulnerable",
+    "meaningJa": "傷つきやすい",
+    "distractorsJa": ["丈夫な", "高価な", "希少な"]
   }
 ]
