@@ -22,14 +22,19 @@ const PREFERRED_VOICE_NAMES = [
   'victoria'
 ];
 
-const RETRY_DELAY_MS = 250;
-const START_CHECK_DELAY_MS = 220;
-const VOICE_WAIT_TIMEOUT_MS = 1500;
 const FAILURE_MESSAGE =
   'この端末では音声再生の初期化に失敗しました。もう一度タップしてください。';
 
+const VOICE_WAIT_TIMEOUT_MS = 1200;
+const START_DETECT_TIMEOUT_MS = 900;
+const RETRY_DELAY_MS = 180;
+
+function isBrowser(): boolean {
+  return typeof window !== 'undefined';
+}
+
 function isSpeechSupported(): boolean {
-  return typeof window !== 'undefined' && 'speechSynthesis' in window;
+  return isBrowser() && 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
 }
 
 function normalize(value: string): string {
@@ -41,9 +46,9 @@ function isEnglishVoice(voice: SpeechSynthesisVoice): boolean {
 }
 
 function scoreVoice(voice: SpeechSynthesisVoice): number {
-  let score = 0;
   const name = normalize(voice.name);
   const lang = normalize(voice.lang);
+  let score = 0;
 
   if (lang.startsWith('en-us')) score += 50;
   else if (lang.startsWith('en-gb')) score += 45;
@@ -76,27 +81,13 @@ export function createBrowserSpeechService(): SpeechService {
   let lastError: string | null = null;
   let selectedVoice: SpeechSynthesisVoice | null = null;
   let voicesCache: SpeechSynthesisVoice[] = [];
-  let retryTimer: number | null = null;
-  let voiceWaitTimer: number | null = null;
+  let activeUtterance: SpeechSynthesisUtterance | null = null;
   let voicesChangedAttached = false;
+  let speakAttemptId = 0;
 
   const getSynth = (): SpeechSynthesis | null => {
     if (!isSpeechSupported()) return null;
     return window.speechSynthesis;
-  };
-
-  const clearRetry = (): void => {
-    if (retryTimer !== null) {
-      window.clearTimeout(retryTimer);
-      retryTimer = null;
-    }
-  };
-
-  const clearVoiceWaitTimer = (): void => {
-    if (voiceWaitTimer !== null) {
-      window.clearTimeout(voiceWaitTimer);
-      voiceWaitTimer = null;
-    }
   };
 
   const refreshVoices = (): SpeechSynthesisVoice[] => {
@@ -110,7 +101,7 @@ export function createBrowserSpeechService(): SpeechService {
 
     voicesCache = synth.getVoices();
     selectedVoice = pickBestVoice(voicesCache);
-    ready = voicesCache.length > 0;
+    ready = true;
 
     return voicesCache;
   };
@@ -119,73 +110,60 @@ export function createBrowserSpeechService(): SpeechService {
     const synth = getSynth();
     if (!synth || voicesChangedAttached) return;
 
-    const handleVoicesChanged = (): void => {
+    synth.addEventListener('voiceschanged', () => {
       refreshVoices();
-    };
+    });
 
-    synth.addEventListener('voiceschanged', handleVoicesChanged);
     voicesChangedAttached = true;
   };
 
-  const waitForVoices = (): void => {
-    if (!isSpeechSupported()) return;
+  const waitForVoices = (timeoutMs = VOICE_WAIT_TIMEOUT_MS): Promise<void> => {
+    return new Promise((resolve) => {
+      if (!isSpeechSupported()) {
+        resolve();
+        return;
+      }
 
-    refreshVoices();
-    if (voicesCache.length > 0) return;
-
-    clearVoiceWaitTimer();
-
-    const startedAt = Date.now();
-
-    const poll = (): void => {
       refreshVoices();
       if (voicesCache.length > 0) {
-        clearVoiceWaitTimer();
+        resolve();
         return;
       }
 
-      if (Date.now() - startedAt >= VOICE_WAIT_TIMEOUT_MS) {
-        clearVoiceWaitTimer();
-        return;
-      }
+      const startedAt = Date.now();
 
-      voiceWaitTimer = window.setTimeout(poll, 100);
-    };
+      const poll = (): void => {
+        refreshVoices();
 
-    poll();
+        if (voicesCache.length > 0) {
+          resolve();
+          return;
+        }
+
+        if (Date.now() - startedAt >= timeoutMs) {
+          resolve();
+          return;
+        }
+
+        window.setTimeout(poll, 80);
+      };
+
+      poll();
+    });
   };
 
-  const unlockIfNeeded = (): void => {
+  const softResetSynth = (): void => {
     const synth = getSynth();
     if (!synth) return;
 
     try {
       synth.cancel();
+    } catch {
+      // no-op
+    }
+
+    try {
       synth.resume();
-
-      const warmup = new SpeechSynthesisUtterance(' ');
-      warmup.volume = 0;
-      warmup.rate = 1;
-      warmup.pitch = 1;
-
-      const voice = selectedVoice ?? pickBestVoice(refreshVoices());
-      if (voice) {
-        warmup.voice = voice;
-        warmup.lang = voice.lang;
-      } else {
-        warmup.lang = 'en-US';
-      }
-
-      synth.speak(warmup);
-
-      window.setTimeout(() => {
-        try {
-          synth.cancel();
-          synth.resume();
-        } catch {
-          // no-op
-        }
-      }, 0);
     } catch {
       // no-op
     }
@@ -193,6 +171,7 @@ export function createBrowserSpeechService(): SpeechService {
 
   const buildUtterance = (text: string): SpeechSynthesisUtterance => {
     const utterance = new SpeechSynthesisUtterance(text);
+
     const voice = selectedVoice ?? pickBestVoice(refreshVoices());
 
     if (voice) {
@@ -202,64 +181,113 @@ export function createBrowserSpeechService(): SpeechService {
       utterance.lang = 'en-US';
     }
 
-    utterance.rate = 0.95;
+    utterance.rate = 0.92;
     utterance.pitch = 1;
     utterance.volume = 1;
 
     return utterance;
   };
 
-  const attemptSpeak = (text: string, allowRetry: boolean): void => {
+  const finalizeUtterance = (utterance: SpeechSynthesisUtterance): void => {
+    if (activeUtterance === utterance) {
+      activeUtterance = null;
+    }
+  };
+
+  const trySpeakNow = (text: string, allowRetry: boolean, attemptId: number): void => {
+    const synth = getSynth();
+
+    if (!synth) {
+      lastError = FAILURE_MESSAGE;
+      return;
+    }
+
+    softResetSynth();
+
+    const utterance = buildUtterance(text);
+    activeUtterance = utterance;
+
+    let didStart = false;
+
+    utterance.onstart = () => {
+      if (attemptId !== speakAttemptId) return;
+      didStart = true;
+      lastError = null;
+    };
+
+    utterance.onend = () => {
+      finalizeUtterance(utterance);
+    };
+
+    utterance.onerror = () => {
+      finalizeUtterance(utterance);
+
+      if (attemptId !== speakAttemptId) return;
+
+      lastError = FAILURE_MESSAGE;
+
+      if (allowRetry) {
+        window.setTimeout(() => {
+          if (attemptId !== speakAttemptId) return;
+          void speakInternal(text, false);
+        }, RETRY_DELAY_MS);
+      }
+    };
+
+    try {
+      synth.speak(utterance);
+    } catch {
+      finalizeUtterance(utterance);
+      lastError = FAILURE_MESSAGE;
+
+      if (allowRetry) {
+        window.setTimeout(() => {
+          if (attemptId !== speakAttemptId) return;
+          void speakInternal(text, false);
+        }, RETRY_DELAY_MS);
+      }
+      return;
+    }
+
+    window.setTimeout(() => {
+      if (attemptId !== speakAttemptId) return;
+
+      const idle = !didStart && !synth.speaking && !synth.pending;
+      if (!idle) return;
+
+      finalizeUtterance(utterance);
+      lastError = FAILURE_MESSAGE;
+
+      if (allowRetry) {
+        void speakInternal(text, false);
+      }
+    }, START_DETECT_TIMEOUT_MS);
+  };
+
+  const speakInternal = async (text: string, allowRetry: boolean): Promise<void> => {
+    if (!text.trim()) return;
+
     const synth = getSynth();
     if (!synth) {
       lastError = FAILURE_MESSAGE;
       return;
     }
 
-    let started = false;
-    const utterance = buildUtterance(text);
+    const attemptId = ++speakAttemptId;
 
-    utterance.onstart = () => {
-      started = true;
-      lastError = null;
-    };
+    await waitForVoices();
 
-    utterance.onerror = () => {
-      lastError = FAILURE_MESSAGE;
-      if (allowRetry) {
-        scheduleRetry(text, false);
-      }
-    };
+    if (attemptId !== speakAttemptId) return;
 
-    try {
-      synth.cancel();
-      synth.resume();
-      synth.speak(utterance);
-    } catch {
-      lastError = FAILURE_MESSAGE;
-      if (allowRetry) {
-        scheduleRetry(text, false);
-      }
-      return;
-    }
+    // voices が空でも default voice で発話を試す
+    refreshVoices();
 
-    if (allowRetry) {
-      window.setTimeout(() => {
-        const stillIdle = !started && !synth.speaking && !synth.pending;
-        if (stillIdle) {
-          lastError = FAILURE_MESSAGE;
-          scheduleRetry(text, false);
-        }
-      }, START_CHECK_DELAY_MS);
-    }
-  };
-
-  const scheduleRetry = (text: string, allowRetry: boolean): void => {
-    clearRetry();
-    retryTimer = window.setTimeout(() => {
-      refreshVoices();
-      attemptSpeak(text, allowRetry);
-    }, RETRY_DELAY_MS);
+    // モバイルで speak が user gesture 直後に安定しやすいように、
+    // micro-delay を入れて synthesis 状態を整える。
+    window.setTimeout(() => {
+      if (attemptId !== speakAttemptId) return;
+      trySpeakNow(text, allowRetry, attemptId);
+    }, 30);
   };
 
   const init = (): void => {
@@ -268,16 +296,15 @@ export function createBrowserSpeechService(): SpeechService {
       return;
     }
 
-    if (!initialized) {
-      attachVoicesChanged();
-      refreshVoices();
-      waitForVoices();
-      unlockIfNeeded();
-      initialized = true;
-      return;
-    }
-
+    attachVoicesChanged();
     refreshVoices();
+    softResetSynth();
+
+    initialized = true;
+
+    void waitForVoices().then(() => {
+      refreshVoices();
+    });
   };
 
   return {
@@ -286,11 +313,20 @@ export function createBrowserSpeechService(): SpeechService {
     },
 
     speak: (text: string) => {
-      if (!text.trim()) return;
+      if (!isSpeechSupported()) {
+        lastError = FAILURE_MESSAGE;
+        return;
+      }
 
-      clearRetry();
-      init();
-      attemptSpeak(text, true);
+      lastError = null;
+
+      if (!initialized) {
+        init();
+      } else {
+        refreshVoices();
+      }
+
+      void speakInternal(text, true);
     },
 
     isAvailable: () => {
@@ -298,6 +334,7 @@ export function createBrowserSpeechService(): SpeechService {
     },
 
     isReady: () => {
+      if (!isSpeechSupported()) return false;
       refreshVoices();
       return ready;
     },
