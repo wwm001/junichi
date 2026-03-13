@@ -2,18 +2,47 @@
   font-family: 'Noto Sans JP', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   color: #111827;
   background: #f3f4f6;
+  line-height: 1.5;
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 * {
   box-sizing: border-box;
 }
 
+html {
+  background: #f3f4f6;
+}
+
 body {
   margin: 0;
+  min-width: 320px;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+#root {
+  min-height: 100vh;
 }
 
 .app-shell {
-  max-width: 640px;
+  max-width: 680px;
   margin: 0 auto;
   padding: 1rem;
   display: grid;
@@ -22,56 +51,121 @@ body {
 
 h1 {
   margin: 0.5rem 0 0;
-  font-size: 1.4rem;
+  font-size: 1.45rem;
+  line-height: 1.35;
+}
+
+h2 {
+  margin: 0;
+  font-size: 1.05rem;
 }
 
 .subtitle {
   margin: 0;
-  color: #374151;
+  color: #4b5563;
   font-size: 0.95rem;
 }
 
 .card {
-  background: #fff;
-  border-radius: 14px;
+  background: #ffffff;
+  border-radius: 16px;
   padding: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 16px rgba(17, 24, 39, 0.08);
+  border: 1px solid rgba(209, 213, 219, 0.7);
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.75rem;
 }
 
 .word {
-  font-size: 1.8rem;
-  margin-bottom: 0.5rem;
+  font-size: 1.9rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  margin: 0.9rem 0 0.5rem;
 }
 
 .speak-button {
   border: 0;
   background: #1f2937;
-  color: #fff;
-  border-radius: 10px;
-  padding: 0.55rem 0.7rem;
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 0.65rem 0.9rem;
+  min-height: 44px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition:
+    transform 0.08s ease,
+    background-color 0.16s ease,
+    opacity 0.16s ease;
+}
+
+.speak-button:hover:not(:disabled) {
+  background: #111827;
+}
+
+.speak-button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.speak-button:disabled {
+  opacity: 0.55;
+}
+
+.note {
+  margin: 0.35rem 0 0;
+  font-size: 0.92rem;
+  color: #4b5563;
+}
+
+.note-error {
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+.note-debug {
+  color: #1d4ed8;
+  font-size: 0.85rem;
 }
 
 .choices,
 .review-grid {
   display: grid;
-  gap: 0.6rem;
+  gap: 0.65rem;
+}
+
+.choices {
+  margin-top: 1rem;
 }
 
 .choice,
 .review-grid button {
   border: 1px solid #d1d5db;
-  background: #fff;
-  border-radius: 10px;
-  padding: 0.8rem;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
   text-align: left;
   font-size: 1rem;
+  min-height: 48px;
+  transition:
+    border-color 0.16s ease,
+    background-color 0.16s ease,
+    transform 0.08s ease,
+    box-shadow 0.16s ease;
+}
+
+.choice:hover:not(:disabled),
+.review-grid button:hover:not(:disabled) {
+  border-color: #9ca3af;
+  box-shadow: 0 2px 8px rgba(17, 24, 39, 0.06);
+}
+
+.choice:active:not(:disabled),
+.review-grid button:active:not(:disabled) {
+  transform: translateY(1px);
 }
 
 .choice.correct {
@@ -84,19 +178,63 @@ h1 {
   background: #fee2e2;
 }
 
+.review-buttons {
+  margin-top: 1rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid #e5e7eb;
+}
+
 .review-buttons p {
-  margin-bottom: 0.5rem;
+  margin: 0 0 0.6rem;
+  font-weight: 600;
+}
+
+.review-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .progress-panel ul {
   margin: 0;
   padding-left: 1.2rem;
   display: grid;
-  gap: 0.3rem;
+  gap: 0.38rem;
+}
+
+.progress-panel li {
+  color: #1f2937;
+}
+
+@media (max-width: 480px) {
+  .app-shell {
+    padding: 0.85rem;
+  }
+
+  .card {
+    padding: 0.9rem;
+    border-radius: 14px;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .speak-button {
+    width: 100%;
+  }
+
+  .word {
+    font-size: 1.7rem;
+  }
 }
 
 @media (min-width: 768px) {
   .app-shell {
-    padding: 2rem;
+    padding: 2rem 1.25rem 3rem;
+    gap: 1.15rem;
+  }
+
+  .card {
+    padding: 1.2rem 1.25rem;
   }
 }
