@@ -29,20 +29,34 @@ export function QuizCard({
     <section className="card">
       <header className="card-header">
         <h2>Vocabulary Audio Quiz</h2>
-        <button className="speak-button" onClick={onSpeak} type="button" disabled={!speechAvailable}>
+        <button
+          className={`speak-button${!speechAvailable ? ' is-unavailable' : ''}`}
+          onClick={onSpeak}
+          type="button"
+        >
           🔊 単語を再生
         </button>
       </header>
 
       <p className="word">{question.item.word}</p>
 
-      {!speechAvailable && <p className="note">このブラウザでは音声再生が利用できません。</p>}
-
-      {speechAvailable && !speechReady && !speechStatusMessage && (
-        <p className="note">初回タップ時に音声を初期化します。反応しない場合はもう一度タップしてください。</p>
+      {!speechAvailable && (
+        <p className="note" aria-live="polite">
+          この端末では音声再生が制限されている可能性があります。ボタンをタップして反応を確認してください。
+        </p>
       )}
 
-      {speechStatusMessage && <p className="note note-error">{speechStatusMessage}</p>}
+      {speechAvailable && !speechReady && !speechStatusMessage && (
+        <p className="note" aria-live="polite">
+          初回タップ時に音声を初期化します。反応しない場合はもう一度タップしてください。
+        </p>
+      )}
+
+      {speechStatusMessage && (
+        <p className="note note-error" aria-live="polite">
+          {speechStatusMessage}
+        </p>
+      )}
 
       {voiceDebugLabel && <p className="note note-debug">DEV voice: {voiceDebugLabel}</p>}
 
