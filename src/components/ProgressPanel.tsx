@@ -3,18 +3,46 @@ interface ProgressPanelProps {
   totalCorrect: number;
   accuracy: number;
   dueCount: number;
+  reviewedCount: number;
+  totalItems: number;
 }
 
-export function ProgressPanel({ totalAnswered, totalCorrect, accuracy, dueCount }: ProgressPanelProps): JSX.Element {
+export function ProgressPanel({
+  totalAnswered,
+  totalCorrect,
+  accuracy,
+  dueCount,
+  reviewedCount,
+  totalItems
+}: ProgressPanelProps): JSX.Element {
   return (
     <section className="card progress-panel">
-      <h2>Progress</h2>
-      <ul>
-        <li>回答数: {totalAnswered}</li>
-        <li>正解数: {totalCorrect}</li>
-        <li>正答率: {accuracy}%</li>
-        <li>今すぐ復習できる単語: {dueCount}</li>
-      </ul>
+      <div className="progress-header">
+        <div>
+          <p className="section-label">学習状況</p>
+          <h2>Progress</h2>
+        </div>
+        <p className="progress-summary">{reviewedCount} / {totalItems} 語に学習履歴あり</p>
+      </div>
+
+      <div className="stats-grid">
+        <article className="stat-card">
+          <p className="stat-label">回答数</p>
+          <p className="stat-value">{totalAnswered}</p>
+        </article>
+        <article className="stat-card">
+          <p className="stat-label">正解数</p>
+          <p className="stat-value">{totalCorrect}</p>
+        </article>
+        <article className="stat-card">
+          <p className="stat-label">正答率</p>
+          <p className="stat-value">{accuracy}%</p>
+        </article>
+        <article className="stat-card">
+          <p className="stat-label">今すぐ復習</p>
+          <p className="stat-value">{dueCount}語</p>
+        </article>
+      </div>
     </section>
   );
 }
