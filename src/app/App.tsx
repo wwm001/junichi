@@ -6,7 +6,7 @@ import { buildQuestion, computeAccuracy, selectNextItem } from '../domain/quiz';
 import { createInitialProgress, isDue, updateProgress } from '../domain/spacedRepetition';
 import type { AppProgress, ReviewRating, VocabularyItem } from '../domain/types';
 import { createBrowserSpeechService } from '../services/speechService';
-import { createBrowserProgressStorage } from '../storage/progressStorage';
+import { createBrowserProgressStorage, emptyProgress } from '../storage/progressStorage';
 
 const vocabulary = vocabularyJson as VocabularyItem[];
 const speechService = createBrowserSpeechService();
@@ -21,6 +21,7 @@ export function App(): JSX.Element {
   const [speechReady, setSpeechReady] = useState<boolean>(speechService.isReady());
   const [speechPlaying, setSpeechPlaying] = useState<boolean>(speechService.isSpeaking());
   const [voiceDebugLabel, setVoiceDebugLabel] = useState<string | null>(null);
+  const [resetStatusMessage, setResetStatusMessage] = useState<string | null>(null);
 
   const currentItem = useMemo(() => selectNextItem(vocabulary, progress), [progress]);
   const question = useMemo(() => buildQuestion(currentItem), [currentItem]);
@@ -51,6 +52,18 @@ export function App(): JSX.Element {
     syncSpeechUi();
   }, [currentItem.id, syncSpeechUi]);
 
+  useEffect(() => {
+    if (!resetStatusMessage) return undefined;
+
+    const timeoutId = window.setTimeout(() => {
+      setResetStatusMessage(null);
+    }, 2800);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [resetStatusMessage]);
+
   const dueCount = useMemo(() => {
     const now = new Date();
 
@@ -65,6 +78,7 @@ export function App(): JSX.Element {
   const onChoice = (choice: string): void => {
     setSelectedChoice(choice);
     setShowResult(true);
+    setResetStatusMessage(null);
   };
 
   const onRate = (rating: ReviewRating): void => {
@@ -89,6 +103,7 @@ export function App(): JSX.Element {
     setShowResult(false);
     setSpeechStatusMessage(null);
     setSpeechPlaying(false);
+    setResetStatusMessage(null);
   };
 
   const onSpeak = (): void => {
@@ -101,6 +116,7 @@ export function App(): JSX.Element {
     }
 
     setSpeechStatusMessage(null);
+    setResetStatusMessage(null);
     setSpeechPlaying(false);
 
     speechService.init();
@@ -113,6 +129,23 @@ export function App(): JSX.Element {
     window.setTimeout(syncSpeechUi, 450);
     window.setTimeout(syncSpeechUi, 900);
     window.setTimeout(syncSpeechUi, 1500);
+  };
+
+  const onResetProgress = (): void => {
+    const confirmed = window.confirm('学習履歴をリセットします。よろしいですか？');
+    if (!confirmed) {
+      return;
+    }
+
+    speechService.stop();
+    progressStorage.clear();
+    setProgress(emptyProgress);
+    setSelectedChoice(null);
+    setShowResult(false);
+    setSpeechStatusMessage(null);
+    setSpeechPlaying(false);
+    setResetStatusMessage('学習履歴をリセットしました。');
+    syncSpeechUi();
   };
 
   const answerStatus = showResult
@@ -157,6 +190,9 @@ export function App(): JSX.Element {
         dueCount={dueCount}
         reviewedCount={reviewedCount}
         totalItems={totalItems}
+        onResetProgress={onResetProgress}
+        hasProgress={progress.totalAnswered > 0 || reviewedCount > 0}
+        resetStatusMessage={resetStatusMessage}
       />
 
       <p className="build-version">build {appBuildVersion}</p>

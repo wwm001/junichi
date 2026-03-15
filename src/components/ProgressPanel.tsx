@@ -5,6 +5,9 @@ interface ProgressPanelProps {
   dueCount: number;
   reviewedCount: number;
   totalItems: number;
+  onResetProgress: () => void;
+  hasProgress: boolean;
+  resetStatusMessage: string | null;
 }
 
 export function ProgressPanel({
@@ -13,17 +16,32 @@ export function ProgressPanel({
   accuracy,
   dueCount,
   reviewedCount,
-  totalItems
+  totalItems,
+  onResetProgress,
+  hasProgress,
+  resetStatusMessage
 }: ProgressPanelProps): JSX.Element {
   return (
     <section className="card progress-panel">
       <div className="progress-header">
         <div>
           <p className="section-label">学習状況</p>
-          <h2>Progress</h2>
+          <h2>進捗</h2>
         </div>
-        <p className="progress-summary">{reviewedCount} / {totalItems} 語に学習履歴あり</p>
+
+        <div className="progress-actions">
+          <p className="progress-summary">{reviewedCount} / {totalItems} 語に学習履歴あり</p>
+          <button type="button" className="ghost-button" onClick={onResetProgress} disabled={!hasProgress}>
+            学習履歴をリセット
+          </button>
+        </div>
       </div>
+
+      {resetStatusMessage && (
+        <p className="note note-success" aria-live="polite">
+          {resetStatusMessage}
+        </p>
+      )}
 
       <div className="stats-grid">
         <article className="stat-card">

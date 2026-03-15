@@ -92,6 +92,12 @@ h2 {
   font-weight: 600;
 }
 
+.progress-actions {
+  display: grid;
+  justify-items: end;
+  gap: 0.55rem;
+}
+
 .environment-note {
   margin: 0;
   color: #6b7280;
@@ -162,12 +168,17 @@ h2 {
 .review-grid button {
   border: 1px solid #d1d5db;
   background: #fff;
+  color: #1f2937;
   border-radius: 14px;
   padding: 1rem;
   text-align: left;
   font-size: 1rem;
   line-height: 1.5;
   min-height: 56px;
+}
+
+.choice:disabled {
+  opacity: 1;
 }
 
 .choice.correct {
@@ -211,6 +222,23 @@ h2 {
 .review-buttons p {
   margin-bottom: 0.55rem;
   font-weight: 700;
+}
+
+.ghost-button {
+  border: 1px solid #c7d2fe;
+  background: #eef2ff;
+  color: #3730a3;
+  border-radius: 999px;
+  padding: 0.6rem 0.9rem;
+  min-height: 40px;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.ghost-button:disabled {
+  border-color: #e5e7eb;
+  background: #f9fafb;
+  color: #9ca3af;
 }
 
 .stats-grid {
@@ -274,6 +302,17 @@ h2 {
   color: #9ca3af;
   font-size: 0.72rem;
   letter-spacing: 0.02em;
+}
+
+@media (max-width: 640px) {
+  .progress-actions {
+    width: 100%;
+    justify-items: stretch;
+  }
+
+  .ghost-button {
+    width: 100%;
+  }
 }
 
 @media (min-width: 768px) {

@@ -38,7 +38,11 @@ export function QuizCard({
   answerStatus,
   onRate
 }: QuizCardProps): JSX.Element {
-  const speakButtonLabel = speechPlaying ? '🔊 再生中…' : '🔊 単語を再生';
+  const speakButtonLabel = speechPlaying
+    ? '🔊 再生中…'
+    : speechReady
+      ? '🔁 もう一度再生'
+      : '🔊 単語を再生';
 
   return (
     <section className="card quiz-card">
@@ -73,7 +77,7 @@ export function QuizCard({
 
       {speechAvailable && speechReady && !speechStatusMessage && !speechPlaying && (
         <p className="note note-info" aria-live="polite">
-          聞き直したい時は、何度でも「単語を再生」を押せます。
+          聞き直したい時は、何度でも再生できます。
         </p>
       )}
 
