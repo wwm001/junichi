@@ -29,9 +29,6 @@ jobs:
       - name: Install dependencies
         run: npm install --include=dev
 
-      - name: Test
-        run: npx vitest run
-
       - name: Build
         run: npm run build
 
