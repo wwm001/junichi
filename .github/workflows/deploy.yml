@@ -33,13 +33,10 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci --include=dev
-
-      - name: Verify toolchain
-        run: npm list @vitejs/plugin-react vite-plugin-pwa vite vitest
+        run: npm install --include=dev
 
       - name: Build
-        run: npm run build
+        run: npx vite build
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
