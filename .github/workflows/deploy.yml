@@ -14,10 +14,6 @@ concurrency:
   group: "pages"
   cancel-in-progress: true
 
-env:
-  CI: true
-  NODE_ENV: development
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -29,14 +25,14 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Install dependencies
-        run: npm install --include=dev
+        run: npm install
 
       - name: Build
-        run: npx vite build
+        run: npm run build
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
