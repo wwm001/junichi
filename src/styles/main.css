@@ -1,0 +1,119 @@
+:root {
+  font-family: 'Noto Sans JP', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #111827;
+  background: #f3f4f6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.app-shell {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 1rem;
+  display: grid;
+  gap: 1rem;
+}
+
+h1 {
+  margin: 0.5rem 0 0;
+  font-size: 1.4rem;
+}
+
+.subtitle {
+  margin: 0;
+  color: #374151;
+  font-size: 0.95rem;
+}
+
+.card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.word {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+
+.note {
+  margin: 0.35rem 0;
+  color: #4b5563;
+  font-size: 0.9rem;
+}
+
+.note.warning {
+  color: #b91c1c;
+}
+
+.debug-label {
+  margin: 0.2rem 0 0.6rem;
+  color: #6b7280;
+  font-size: 0.78rem;
+}
+
+.speak-button {
+  border: 0;
+  background: #1f2937;
+  color: #fff;
+  border-radius: 10px;
+  padding: 0.55rem 0.7rem;
+}
+
+.choices,
+.review-grid {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.choice,
+.review-grid button {
+  border: 1px solid #d1d5db;
+  background: #fff;
+  border-radius: 10px;
+  padding: 0.8rem;
+  text-align: left;
+  font-size: 1rem;
+}
+
+.choice.correct {
+  border-color: #16a34a;
+  background: #dcfce7;
+}
+
+.choice.wrong {
+  border-color: #dc2626;
+  background: #fee2e2;
+}
+
+.review-buttons p {
+  margin-bottom: 0.5rem;
+}
+
+.progress-panel ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  display: grid;
+  gap: 0.3rem;
+}
+
+@media (min-width: 768px) {
+  .app-shell {
+    padding: 2rem;
+  }
+}
