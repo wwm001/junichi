@@ -14,41 +14,27 @@ concurrency:
   group: "pages"
   cancel-in-progress: true
 
-env:
-  CI: true
-  npm_config_cache: /tmp/.npm
-
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 20.12.2
+          package-manager-cache: false
 
       - name: Show tool versions
         run: |
           node -v
           npm -v
-          npm config get cache
-
-      - name: Clean npm cache
-        run: npm cache clean --force
 
       - name: Install dependencies
-        run: |
-          for i in 1 2 3; do
-            npm ci --no-audit --no-fund && exit 0
-            echo "npm ci failed (attempt $i), cleaning cache and retrying..."
-            npm cache clean --force
-            sleep 5
-          done
-          exit 1
+        run: npm ci --no-audit --no-fund
 
       - name: Build
         run: npm run build
