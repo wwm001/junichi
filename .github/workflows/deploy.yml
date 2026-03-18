@@ -17,6 +17,7 @@ concurrency:
 env:
   CI: true
   npm_config_cache: /tmp/.npm
+  npm_config_registry: https://registry.npmjs.org/
 
 jobs:
   build:
@@ -37,7 +38,15 @@ jobs:
         run: |
           node -v
           npm -v
-          npm config get cache
+          npm config get registry
+
+      - name: Force npm public registry
+        run: |
+          npm config set registry https://registry.npmjs.org/
+          npm config delete proxy || true
+          npm config delete https-proxy || true
+          npm config get registry
+          npm ping --registry=https://registry.npmjs.org/
 
       - name: Prepare npm network settings
         run: |
