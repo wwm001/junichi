@@ -21,6 +21,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - name: Checkout
@@ -40,23 +41,23 @@ jobs:
 
       - name: Prepare npm network settings
         run: |
-          npm config set fetch-retries 5
-          npm config set fetch-retry-mintimeout 20000
-          npm config set fetch-retry-maxtimeout 120000
-          npm config set fetch-timeout 300000
+          npm config set fetch-retries 2
+          npm config set fetch-retry-mintimeout 10000
+          npm config set fetch-retry-maxtimeout 30000
+          npm config set fetch-timeout 60000
 
       - name: Install dependencies
         run: |
-          for i in 1 2 3; do
+          for i in 1 2; do
             echo "npm ci attempt $i"
             npm ci --no-audit --no-fund && exit 0
 
-            echo "npm ci failed (attempt $i), cleaning cache and retrying in 15s..."
+            echo "npm ci failed (attempt $i), cleaning cache and retrying in 10s..."
             npm cache clean --force
-            sleep 15
+            sleep 10
           done
 
-          echo "npm ci failed after 3 attempts"
+          echo "npm ci failed after 2 attempts"
           exit 1
 
       - name: Build
@@ -73,6 +74,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
