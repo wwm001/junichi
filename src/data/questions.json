@@ -1,0 +1,763 @@
+[
+  {
+    "id": "q001",
+    "section": "vocab-gap",
+    "difficulty": "basic",
+    "source": "original",
+    "prompt": "After years of financial stress, the small publisher had to ____ its plan to open a second office.",
+    "choices": [
+      "abandon",
+      "endorse",
+      "repair",
+      "compile"
+    ],
+    "answerIndex": 0,
+    "explanation": "abandon は「断念する、見捨てる」。計画をやめる文脈に合う。",
+    "translation": "長年の資金難の末、その小さな出版社は第二オフィス開設計画を断念せざるを得なかった。",
+    "audioText": "After years of financial stress, the small publisher had to abandon its plan to open a second office.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "core-vocab"
+  },
+  {
+    "id": "q002",
+    "section": "vocab-gap",
+    "difficulty": "basic",
+    "source": "original",
+    "prompt": "The editor worked all night to ____ the interviews into a single feature article.",
+    "choices": [
+      "erase",
+      "compile",
+      "scatter",
+      "postpone"
+    ],
+    "answerIndex": 1,
+    "explanation": "compile は「編集してまとめる」。記事にまとめる動作に対応する。",
+    "translation": "編集者はインタビューを一つの特集記事にまとめるため、一晩中作業した。",
+    "audioText": "The editor worked all night to compile the interviews into a single feature article.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "core-vocab"
+  },
+  {
+    "id": "q003",
+    "section": "vocab-gap",
+    "difficulty": "basic",
+    "source": "original",
+    "prompt": "Mika was ____ to speak first, but she eventually shared her idea with the group.",
+    "choices": [
+      "eager",
+      "reluctant",
+      "certain",
+      "grateful"
+    ],
+    "answerIndex": 1,
+    "explanation": "reluctant は「気が進まない」。最初は話したがらなかった流れに一致する。",
+    "translation": "ミカは最初に話すことに気が進まなかったが、最終的には自分の考えをグループに共有した。",
+    "audioText": "Mika was reluctant to speak first, but she eventually shared her idea with the group.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "core-vocab"
+  },
+  {
+    "id": "q004",
+    "section": "vocab-gap",
+    "difficulty": "basic",
+    "source": "original",
+    "prompt": "A good teacher can ____ difficult ideas in language that students can understand.",
+    "choices": [
+      "convey",
+      "ignore",
+      "replace",
+      "resist"
+    ],
+    "answerIndex": 0,
+    "explanation": "convey は「伝える」。考えや情報を相手に分かる形で伝達すること。",
+    "translation": "良い教師は、難しい考えを生徒が理解できる言葉で伝えられる。",
+    "audioText": "A good teacher can convey difficult ideas in language that students can understand.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "core-vocab"
+  },
+  {
+    "id": "q005",
+    "section": "vocab-gap",
+    "difficulty": "basic",
+    "source": "original",
+    "prompt": "The storm caused ____ damage to farms across the region.",
+    "choices": [
+      "minor",
+      "substantial",
+      "temporary",
+      "equal"
+    ],
+    "answerIndex": 1,
+    "explanation": "substantial は「かなりの、大きな」。被害の規模を表す。",
+    "translation": "その嵐は地域一帯の農場にかなり大きな被害をもたらした。",
+    "audioText": "The storm caused substantial damage to farms across the region.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "core-vocab"
+  },
+  {
+    "id": "q006",
+    "section": "vocab-gap",
+    "difficulty": "basic",
+    "source": "original",
+    "prompt": "During the drought, clean drinking water became ____ in several villages.",
+    "choices": [
+      "scarce",
+      "abundant",
+      "stable",
+      "visible"
+    ],
+    "answerIndex": 0,
+    "explanation": "scarce は「不足した、乏しい」。旱魃で水が足りない状況に合う。",
+    "translation": "干ばつの間、いくつかの村ではきれいな飲み水が不足した。",
+    "audioText": "During the drought, clean drinking water became scarce in several villages.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "core-vocab"
+  },
+  {
+    "id": "q007",
+    "section": "vocab-gap",
+    "difficulty": "basic",
+    "source": "original",
+    "prompt": "Please send me a ____ reply so we can finalize the reservation today.",
+    "choices": [
+      "prompt",
+      "casual",
+      "silent",
+      "random"
+    ],
+    "answerIndex": 0,
+    "explanation": "prompt は「即座の、迅速な」。すぐ返答してほしい文脈。",
+    "translation": "今日中に予約を確定できるよう、できるだけ早く返答してください。",
+    "audioText": "Please send me a prompt reply so we can finalize the reservation today.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "core-vocab"
+  },
+  {
+    "id": "q008",
+    "section": "vocab-gap",
+    "difficulty": "basic",
+    "source": "original",
+    "prompt": "The old map referred to several towns that are now ____ to modern travelers.",
+    "choices": [
+      "familiar",
+      "obscure",
+      "essential",
+      "available"
+    ],
+    "answerIndex": 1,
+    "explanation": "obscure は「よく知られていない」。現代の旅行者には無名の町という流れ。",
+    "translation": "その古地図には、現代の旅行者にはほとんど知られていない町がいくつか記されていた。",
+    "audioText": "The old map referred to several towns that are now obscure to modern travelers.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "core-vocab"
+  },
+  {
+    "id": "q009",
+    "section": "vocab-gap",
+    "difficulty": "basic",
+    "source": "original",
+    "prompt": "The city decided to ____ more funds to public libraries this year.",
+    "choices": [
+      "allocate",
+      "withdraw",
+      "repeat",
+      "borrow"
+    ],
+    "answerIndex": 0,
+    "explanation": "allocate は「割り当てる」。予算配分に使う。",
+    "translation": "市は今年、公共図書館により多くの予算を割り当てることにした。",
+    "audioText": "The city decided to allocate more funds to public libraries this year.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "core-vocab"
+  },
+  {
+    "id": "q010",
+    "section": "vocab-gap",
+    "difficulty": "basic",
+    "source": "original",
+    "prompt": "Even after the surgery, the athlete had to ____ months of painful rehabilitation.",
+    "choices": [
+      "avoid",
+      "endure",
+      "predict",
+      "forbid"
+    ],
+    "answerIndex": 1,
+    "explanation": "endure は「耐える」。長い痛みや困難に耐え抜く。",
+    "translation": "手術後であっても、その選手は数か月に及ぶ痛みを伴うリハビリに耐えなければならなかった。",
+    "audioText": "Even after the surgery, the athlete had to endure months of painful rehabilitation.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "core-vocab"
+  },
+  {
+    "id": "q011",
+    "section": "vocab-gap",
+    "difficulty": "basic",
+    "source": "original",
+    "prompt": "These ancient documents are too ____ to be handled without gloves.",
+    "choices": [
+      "fragile",
+      "curious",
+      "massive",
+      "routine"
+    ],
+    "answerIndex": 0,
+    "explanation": "fragile は「壊れやすい」。古文書の扱いに注意が必要な文脈。",
+    "translation": "これらの古文書は非常にもろいため、手袋なしでは扱えない。",
+    "audioText": "These ancient documents are too fragile to be handled without gloves.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "core-vocab"
+  },
+  {
+    "id": "q012",
+    "section": "vocab-gap",
+    "difficulty": "basic",
+    "source": "original",
+    "prompt": "She practiced every morning to ____ the level of fluency needed for the interview.",
+    "choices": [
+      "attain",
+      "reject",
+      "measure",
+      "divide"
+    ],
+    "answerIndex": 0,
+    "explanation": "attain は「達成する、到達する」。必要な水準に達する文脈。",
+    "translation": "彼女は面接に必要な流暢さのレベルに到達するため、毎朝練習した。",
+    "audioText": "She practiced every morning to attain the level of fluency needed for the interview.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "core-vocab"
+  },
+  {
+    "id": "q013",
+    "section": "vocab-gap",
+    "difficulty": "standard",
+    "source": "original",
+    "prompt": "The committee took several days to ____ before announcing its final recommendation.",
+    "choices": [
+      "deliberate",
+      "migrate",
+      "celebrate",
+      "extract"
+    ],
+    "answerIndex": 0,
+    "explanation": "deliberate は「熟考する、慎重に審議する」。委員会の最終勧告前に適切。",
+    "translation": "委員会は最終勧告を発表する前に数日かけて慎重に審議した。",
+    "audioText": "The committee took several days to deliberate before announcing its final recommendation.",
+    "tags": [
+      "vocabulary",
+      "inference"
+    ],
+    "subcategory": "decision-making"
+  },
+  {
+    "id": "q014",
+    "section": "vocab-gap",
+    "difficulty": "standard",
+    "source": "original",
+    "prompt": "There was ____ evidence to reopen the investigation, so the case was reviewed again.",
+    "choices": [
+      "ample",
+      "fictional",
+      "hidden",
+      "moral"
+    ],
+    "answerIndex": 0,
+    "explanation": "ample は「十分な」。再捜査に足る証拠量を示す。",
+    "translation": "再捜査を開始するのに十分な証拠があったため、その事件は再び検討された。",
+    "audioText": "There was ample evidence to reopen the investigation, so the case was reviewed again.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "evidence"
+  },
+  {
+    "id": "q015",
+    "section": "vocab-gap",
+    "difficulty": "standard",
+    "source": "original",
+    "prompt": "The manager did not ____ the complaint as trivial; instead, she met the customer in person.",
+    "choices": [
+      "dismiss",
+      "collect",
+      "inherit",
+      "display"
+    ],
+    "answerIndex": 0,
+    "explanation": "dismiss は「退ける、軽視する」。苦情を些細だとして片づけないという意味。",
+    "translation": "その支配人は苦情を些細なものとして片づけず、代わりに直接その客と会った。",
+    "audioText": "The manager did not dismiss the complaint as trivial; instead, she met the customer in person.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "customer-service"
+  },
+  {
+    "id": "q016",
+    "section": "vocab-gap",
+    "difficulty": "standard",
+    "source": "original",
+    "prompt": "The new regulation will ____ strict limits on the disposal of industrial waste.",
+    "choices": [
+      "impose",
+      "delay",
+      "predict",
+      "translate"
+    ],
+    "answerIndex": 0,
+    "explanation": "impose は「課す」。規制や制限を課す時に使う。",
+    "translation": "その新しい規制は、産業廃棄物の処理に厳しい制限を課すことになる。",
+    "audioText": "The new regulation will impose strict limits on the disposal of industrial waste.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "policy"
+  },
+  {
+    "id": "q017",
+    "section": "vocab-gap",
+    "difficulty": "standard",
+    "source": "original",
+    "prompt": "Many local programs are designed to ____ interest in science among teenagers.",
+    "choices": [
+      "foster",
+      "suspend",
+      "clarify",
+      "trade"
+    ],
+    "answerIndex": 0,
+    "explanation": "foster は「育む、促進する」。関心や成長を促す。",
+    "translation": "地域の多くのプログラムは、10代の若者の科学への関心を育むよう設計されている。",
+    "audioText": "Many local programs are designed to foster interest in science among teenagers.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "education"
+  },
+  {
+    "id": "q018",
+    "section": "vocab-gap",
+    "difficulty": "standard",
+    "source": "original",
+    "prompt": "Given the poor weather forecast, a delay in the flight seemed almost ____.",
+    "choices": [
+      "inevitable",
+      "artificial",
+      "optional",
+      "brief"
+    ],
+    "answerIndex": 0,
+    "explanation": "inevitable は「避けられない」。天候不良による遅延がほぼ確実。",
+    "translation": "悪天候の予報を考えると、その便の遅れはほとんど避けられないように思われた。",
+    "audioText": "Given the poor weather forecast, a delay in the flight seemed almost inevitable.",
+    "tags": [
+      "vocabulary",
+      "inference"
+    ],
+    "subcategory": "travel"
+  },
+  {
+    "id": "q019",
+    "section": "vocab-gap",
+    "difficulty": "standard",
+    "source": "original",
+    "prompt": "We cannot afford to ____ small errors in the report, because investors will read every page.",
+    "choices": [
+      "overlook",
+      "manufacture",
+      "inherit",
+      "resign"
+    ],
+    "answerIndex": 0,
+    "explanation": "overlook は「見落とす」。些細な誤りも見逃せないという文脈。",
+    "translation": "投資家が全ページを読むのだから、報告書の小さな誤りも見落とすわけにはいかない。",
+    "audioText": "We cannot afford to overlook small errors in the report, because investors will read every page.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "business"
+  },
+  {
+    "id": "q020",
+    "section": "vocab-gap",
+    "difficulty": "standard",
+    "source": "original",
+    "prompt": "The winter storm was so ____ that trains were canceled throughout the region.",
+    "choices": [
+      "severe",
+      "distant",
+      "ordinary",
+      "brief"
+    ],
+    "answerIndex": 0,
+    "explanation": "severe は「深刻な、厳しい」。暴風雪の強さを表す。",
+    "translation": "その冬の嵐は非常に激しく、地域全体で列車が運休になった。",
+    "audioText": "The winter storm was so severe that trains were canceled throughout the region.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "weather"
+  },
+  {
+    "id": "q021",
+    "section": "vocab-gap",
+    "difficulty": "standard",
+    "source": "original",
+    "prompt": "Her explanation sounded ____ at first, but the data later proved it wrong.",
+    "choices": [
+      "plausible",
+      "fragile",
+      "manual",
+      "reckless"
+    ],
+    "answerIndex": 0,
+    "explanation": "plausible は「もっともらしい」。一見筋が通って聞こえるときに使う。",
+    "translation": "彼女の説明は最初はもっともらしく聞こえたが、後にデータがそれを誤りだと示した。",
+    "audioText": "Her explanation sounded plausible at first, but the data later proved it wrong.",
+    "tags": [
+      "vocabulary",
+      "inference"
+    ],
+    "subcategory": "argument"
+  },
+  {
+    "id": "q022",
+    "section": "vocab-gap",
+    "difficulty": "standard",
+    "source": "original",
+    "prompt": "The article was criticized for using statistics in a way that could ____ the public debate.",
+    "choices": [
+      "distort",
+      "restore",
+      "reward",
+      "schedule"
+    ],
+    "answerIndex": 0,
+    "explanation": "distort は「歪める」。統計の使い方が議論をゆがめる。",
+    "translation": "その記事は、統計を公共の議論をゆがめかねない形で用いたとして批判された。",
+    "audioText": "The article was criticized for using statistics in a way that could distort the public debate.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "media"
+  },
+  {
+    "id": "q023",
+    "section": "vocab-gap",
+    "difficulty": "standard",
+    "source": "original",
+    "prompt": "The researcher kept ____ notes so that every step of the experiment could be reviewed.",
+    "choices": [
+      "meticulous",
+      "casual",
+      "vague",
+      "hostile"
+    ],
+    "answerIndex": 0,
+    "explanation": "meticulous は「細心の、綿密な」。実験記録にふさわしい。",
+    "translation": "研究者は、実験のすべての手順を見直せるよう綿密な記録を残した。",
+    "audioText": "The researcher kept meticulous notes so that every step of the experiment could be reviewed.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "research"
+  },
+  {
+    "id": "q024",
+    "section": "vocab-gap",
+    "difficulty": "standard",
+    "source": "original",
+    "prompt": "Before publishing the story, the newspaper asked two editors to ____ every quoted detail.",
+    "choices": [
+      "verify",
+      "abandon",
+      "inherit",
+      "persuade"
+    ],
+    "answerIndex": 0,
+    "explanation": "verify は「確認する、裏づける」。引用内容の事実確認。",
+    "translation": "記事を掲載する前に、その新聞社は引用された詳細をすべて二人の編集者に確認させた。",
+    "audioText": "Before publishing the story, the newspaper asked two editors to verify every quoted detail.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "journalism"
+  },
+  {
+    "id": "q025",
+    "section": "vocab-gap",
+    "difficulty": "practical",
+    "source": "original",
+    "prompt": "High parking fees are intended to ____ commuters from bringing their cars into the city center.",
+    "choices": [
+      "deter",
+      "notify",
+      "appoint",
+      "mirror"
+    ],
+    "answerIndex": 0,
+    "explanation": "deter は「思いとどまらせる、抑止する」。高い駐車料金で車通勤を減らす。",
+    "translation": "高い駐車料金は、通勤者が都心部に車を持ち込むのを思いとどまらせることを意図している。",
+    "audioText": "High parking fees are intended to deter commuters from bringing their cars into the city center.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "policy"
+  },
+  {
+    "id": "q026",
+    "section": "vocab-gap",
+    "difficulty": "practical",
+    "source": "original",
+    "prompt": "The diplomat offered a ____ response that acknowledged both sides without taking an extreme position.",
+    "choices": [
+      "naive",
+      "nuanced",
+      "abrupt",
+      "literal"
+    ],
+    "answerIndex": 1,
+    "explanation": "nuanced は「微妙な差異を含んだ、ニュアンスのある」。外交文脈に適する。",
+    "translation": "その外交官は、極端な立場を取らず双方を認めるニュアンスのある返答をした。",
+    "audioText": "The diplomat offered a nuanced response that acknowledged both sides without taking an extreme position.",
+    "tags": [
+      "vocabulary",
+      "inference"
+    ],
+    "subcategory": "diplomacy"
+  },
+  {
+    "id": "q027",
+    "section": "vocab-gap",
+    "difficulty": "practical",
+    "source": "original",
+    "prompt": "Without reliable battery storage, the plan to rely entirely on solar power is not yet ____.",
+    "choices": [
+      "feasible",
+      "moral",
+      "vivid",
+      "neutral"
+    ],
+    "answerIndex": 0,
+    "explanation": "feasible は「実行可能な」。現実的に成り立つかを問う語。",
+    "translation": "信頼できる蓄電技術がなければ、太陽光発電だけに全面依存する計画はまだ実行可能ではない。",
+    "audioText": "Without reliable battery storage, the plan to rely entirely on solar power is not yet feasible.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "technology"
+  },
+  {
+    "id": "q028",
+    "section": "vocab-gap",
+    "difficulty": "practical",
+    "source": "original",
+    "prompt": "The interviewer asked a broad question to ____ a more honest and detailed reply.",
+    "choices": [
+      "elicit",
+      "conceal",
+      "inherit",
+      "postpone"
+    ],
+    "answerIndex": 0,
+    "explanation": "elicit は「引き出す」。答えや感情を相手から引き出すときに使う。",
+    "translation": "その面接官は、より率直で詳細な返答を引き出すために広い質問をした。",
+    "audioText": "The interviewer asked a broad question to elicit a more honest and detailed reply.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "communication"
+  },
+  {
+    "id": "q029",
+    "section": "vocab-gap",
+    "difficulty": "practical",
+    "source": "original",
+    "prompt": "Although the company faced repeated setbacks, its small research team remained remarkably ____.",
+    "choices": [
+      "resilient",
+      "idle",
+      "superficial",
+      "transparent"
+    ],
+    "answerIndex": 0,
+    "explanation": "resilient は「立ち直る力がある、しなやかな」。逆境に強い状態。",
+    "translation": "その会社は何度も挫折に見舞われたが、小さな研究チームは驚くほど粘り強かった。",
+    "audioText": "Although the company faced repeated setbacks, its small research team remained remarkably resilient.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "business"
+  },
+  {
+    "id": "q030",
+    "section": "vocab-gap",
+    "difficulty": "practical",
+    "source": "original",
+    "prompt": "The software patch was released quickly to ____ a security flaw discovered by outside experts.",
+    "choices": [
+      "rectify",
+      "broadcast",
+      "suspend",
+      "prolong"
+    ],
+    "answerIndex": 0,
+    "explanation": "rectify は「是正する、修正する」。欠陥修正の文脈で使う。",
+    "translation": "そのソフトウェアの更新は、外部の専門家が発見した安全上の欠陥を是正するため迅速に公開された。",
+    "audioText": "The software patch was released quickly to rectify a security flaw discovered by outside experts.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "technology"
+  },
+  {
+    "id": "q031",
+    "section": "vocab-gap",
+    "difficulty": "practical",
+    "source": "original",
+    "prompt": "Because the witness used several ____ expressions, the police had to ask follow-up questions.",
+    "choices": [
+      "ambiguous",
+      "precise",
+      "literal",
+      "cheerful"
+    ],
+    "answerIndex": 0,
+    "explanation": "ambiguous は「曖昧な」。証言がはっきりしない状態。",
+    "translation": "その証人はいくつか曖昧な表現を使ったため、警察は追加の質問をしなければならなかった。",
+    "audioText": "Because the witness used several ambiguous expressions, the police had to ask follow-up questions.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "law"
+  },
+  {
+    "id": "q032",
+    "section": "vocab-gap",
+    "difficulty": "practical",
+    "source": "original",
+    "prompt": "The laboratory reported three ____ days of stable results, which increased confidence in the method.",
+    "choices": [
+      "consecutive",
+      "optional",
+      "remote",
+      "symbolic"
+    ],
+    "answerIndex": 0,
+    "explanation": "consecutive は「連続した」。連日同じ結果が得られたことを表す。",
+    "translation": "その研究所は3日連続で安定した結果を報告し、その方法への信頼が高まった。",
+    "audioText": "The laboratory reported three consecutive days of stable results, which increased confidence in the method.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "research"
+  },
+  {
+    "id": "q033",
+    "section": "vocab-gap",
+    "difficulty": "practical",
+    "source": "original",
+    "prompt": "If the pipes are not replaced soon, the building conditions will continue to ____.",
+    "choices": [
+      "deteriorate",
+      "emerge",
+      "circulate",
+      "cooperate"
+    ],
+    "answerIndex": 0,
+    "explanation": "deteriorate は「悪化する」。建物状態がさらに悪くなる。",
+    "translation": "配管をすぐに交換しなければ、その建物の状態はさらに悪化し続けるだろう。",
+    "audioText": "If the pipes are not replaced soon, the building conditions will continue to deteriorate.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "infrastructure"
+  },
+  {
+    "id": "q034",
+    "section": "vocab-gap",
+    "difficulty": "practical",
+    "source": "original",
+    "prompt": "The lawyer presented a ____ argument that persuaded even the undecided members of the jury.",
+    "choices": [
+      "compelling",
+      "routine",
+      "fragile",
+      "humble"
+    ],
+    "answerIndex": 0,
+    "explanation": "compelling は「説得力のある」。陪審員を動かす議論。",
+    "translation": "その弁護士は、まだ判断を決めていなかった陪審員さえ納得させる説得力のある議論を示した。",
+    "audioText": "The lawyer presented a compelling argument that persuaded even the undecided members of the jury.",
+    "tags": [
+      "vocabulary",
+      "opinion"
+    ],
+    "subcategory": "argument"
+  },
+  {
+    "id": "q035",
+    "section": "vocab-gap",
+    "difficulty": "practical",
+    "source": "original",
+    "prompt": "Several senior scientists publicly ____ the report, giving it unusual credibility.",
+    "choices": [
+      "endorse",
+      "erase",
+      "confuse",
+      "interrupt"
+    ],
+    "answerIndex": 0,
+    "explanation": "endorse は「支持する、是認する」。報告書を公に支持する場面。",
+    "translation": "複数の上級科学者がその報告書を公に支持し、異例の信頼性を与えた。",
+    "audioText": "Several senior scientists publicly endorse the report, giving it unusual credibility.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "research"
+  },
+  {
+    "id": "q036",
+    "section": "vocab-gap",
+    "difficulty": "practical",
+    "source": "original",
+    "prompt": "The charity hopes its new emergency fund will ____ some of the pressure on low-income families.",
+    "choices": [
+      "alleviate",
+      "justify",
+      "reverse",
+      "convey"
+    ],
+    "answerIndex": 0,
+    "explanation": "alleviate は「和らげる、軽減する」。負担や苦しみを軽減する時に使う。",
+    "translation": "その慈善団体は、新しい緊急基金が低所得世帯への負担をいくらか和らげることを期待している。",
+    "audioText": "The charity hopes its new emergency fund will alleviate some of the pressure on low-income families.",
+    "tags": [
+      "vocabulary"
+    ],
+    "subcategory": "society"
+  }
+]
