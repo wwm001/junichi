@@ -759,5 +759,257 @@
       "vocabulary"
     ],
     "subcategory": "society"
+  },
+  {
+    "id": "lg001",
+    "section": "long-gap",
+    "difficulty": "basic",
+    "source": "original",
+    "prompt": "The museum had planned to expand its evening programs. ______, after surveying local residents, the director realized that many families wanted weekend workshops more than late-night events.",
+    "choices": [
+      "However",
+      "Similarly",
+      "Meanwhile",
+      "Therefore"
+    ],
+    "answerIndex": 0,
+    "explanation": "However 逆接。夜間イベント拡大の計画に対し、調査後に別需要が判明した流れ。",
+    "translation": "博物館は夜間プログラムを拡充する予定だった。しかし地元住民への調査後、館長は多くの家族が深夜イベントより週末ワークショップを求めていると気づいた。",
+    "audioText": "The museum had planned to expand its evening programs. However, after surveying local residents, the director realized that many families wanted weekend workshops more than late-night events.",
+    "tags": [
+      "detail"
+    ],
+    "subcategory": "long-gap-beta"
+  },
+  {
+    "id": "lg002",
+    "section": "long-gap",
+    "difficulty": "basic",
+    "source": "original",
+    "prompt": "Many small towns rely on volunteers to keep their libraries open. In this town, retired teachers organize reading hours and college students help with shelving. ______, the library can stay open six days a week despite its limited budget.",
+    "choices": [
+      "As a result",
+      "For example",
+      "In contrast",
+      "Otherwise"
+    ],
+    "answerIndex": 0,
+    "explanation": "As a result 結果。前文の支援活動の結果として開館日数を維持できている。",
+    "translation": "多くの小さな町では図書館を開けておくためにボランティアに頼っている。この町では退職した教師が読み聞かせを行い、大学生が本の整理を手伝っている。その結果、限られた予算にもかかわらず図書館は週6日開館できている。",
+    "audioText": "Many small towns rely on volunteers to keep their libraries open. In this town, retired teachers organize reading hours and college students help with shelving. As a result, the library can stay open six days a week despite its limited budget.",
+    "tags": [
+      "main-idea"
+    ],
+    "subcategory": "long-gap-beta"
+  },
+  {
+    "id": "lg003",
+    "section": "long-gap",
+    "difficulty": "standard",
+    "source": "original",
+    "prompt": "The startup originally marketed its app as a tool for busy office workers. User interviews, though, revealed that freelance designers were the most enthusiastic early adopters. ______, the company revised its advertisements to focus on creative professionals instead.",
+    "choices": [
+      "Consequently",
+      "Besides",
+      "Likewise",
+      "By comparison"
+    ],
+    "answerIndex": 0,
+    "explanation": "Consequently 結果。利用者調査の結果を受けて広告方針を変えた。",
+    "translation": "その新興企業は当初、自社アプリを忙しい会社員向けのツールとして売り出していた。しかし利用者への聞き取りから、初期導入者として最も熱心だったのはフリーランスのデザイナーだと分かった。そこで同社は広告をクリエイティブ職向けに修正した。",
+    "audioText": "The startup originally marketed its app as a tool for busy office workers. User interviews, though, revealed that freelance designers were the most enthusiastic early adopters. Consequently, the company revised its advertisements to focus on creative professionals instead.",
+    "tags": [
+      "inference"
+    ],
+    "subcategory": "long-gap-beta"
+  },
+  {
+    "id": "lg004",
+    "section": "long-gap",
+    "difficulty": "standard",
+    "source": "original",
+    "prompt": "Researchers had expected the coastal plants to recover quickly after the storm. The salt left in the soil, however, damaged young roots for months. ______, the team concluded that restoration would take far longer than first predicted.",
+    "choices": [
+      "Accordingly",
+      "Otherwise",
+      "For instance",
+      "Likewise"
+    ],
+    "answerIndex": 0,
+    "explanation": "Accordingly は『それに応じて、その結果』。塩害が長期化し、復旧見込みも修正した流れ。",
+    "translation": "研究者たちは嵐の後、海岸植物はすぐに回復すると予想していた。しかし土壌に残った塩分は若い根を何か月も傷め続けた。そのため研究チームは、復元には当初の予測よりはるかに長い時間がかかると結論づけた。",
+    "audioText": "Researchers had expected the coastal plants to recover quickly after the storm. The salt left in the soil, however, damaged young roots for months. Accordingly, the team concluded that restoration would take far longer than first predicted.",
+    "tags": [
+      "detail"
+    ],
+    "subcategory": "long-gap-beta"
+  },
+  {
+    "id": "lg005",
+    "section": "long-gap",
+    "difficulty": "standard",
+    "source": "original",
+    "prompt": "Some critics say remote work weakens collaboration. Yet one manufacturing firm reported the opposite after redesigning its online meetings. Managers shortened presentations, shared decisions in writing, and reserved time for questions. ______, employees said discussions became clearer and more focused than before.",
+    "choices": [
+      "As a result",
+      "At first",
+      "For example",
+      "In contrast"
+    ],
+    "answerIndex": 0,
+    "explanation": "As a result。会議設計を変えた結果、議論が明確になった。",
+    "translation": "在宅勤務は協働を弱めると言う批評家もいる。だがある製造会社はオンライン会議を作り直した後、逆の結果を報告した。管理職は説明を短くし、決定事項を文書で共有し、質問時間を確保した。その結果、従業員は議論が以前より明確で集中しやすくなったと述べた。",
+    "audioText": "Some critics say remote work weakens collaboration. Yet one manufacturing firm reported the opposite after redesigning its online meetings. Managers shortened presentations, shared decisions in writing, and reserved time for questions. As a result, employees said discussions became clearer and more focused than before.",
+    "tags": [
+      "main-idea"
+    ],
+    "subcategory": "long-gap-beta"
+  },
+  {
+    "id": "lg006",
+    "section": "long-gap",
+    "difficulty": "practical",
+    "source": "original",
+    "prompt": "The historian first assumed that the letters had been written years apart. Careful analysis of the paper and ink showed that they were probably produced within the same month. ______, she began to suspect that the correspondence had been arranged later to create a false impression of a long relationship.",
+    "choices": [
+      "Therefore",
+      "Meanwhile",
+      "For instance",
+      "Nevertheless"
+    ],
+    "answerIndex": 0,
+    "explanation": "Therefore 結論導入。同月作成の可能性から、後年の工作を疑い始める。",
+    "translation": "その歴史家は当初、その手紙は何年も隔てて書かれたのだと考えていた。だが紙とインクを丁寧に調べると、実際には同じ月のうちに作成された可能性が高いと分かった。そこで彼女は、その文通が長年の関係を装うため後から仕組まれたのではないかと疑い始めた。",
+    "audioText": "The historian first assumed that the letters had been written years apart. Careful analysis of the paper and ink showed that they were probably produced within the same month. Therefore, she began to suspect that the correspondence had been arranged later to create a false impression of a long relationship.",
+    "tags": [
+      "inference"
+    ],
+    "subcategory": "long-gap-beta"
+  },
+  {
+    "id": "lg007",
+    "section": "long-gap",
+    "difficulty": "basic",
+    "source": "original",
+    "prompt": "The city wanted to reduce traffic near the station. It increased bus service, widened sidewalks, and added secure bicycle parking. ______, commuters gradually stopped relying on private cars for short trips downtown.",
+    "choices": [
+      "Gradually",
+      "Similarly",
+      "Instead",
+      "On the other hand"
+    ],
+    "answerIndex": 0,
+    "explanation": "Gradually は変化が段階的に起きたことを示す副詞で文脈に合う。",
+    "translation": "市は駅周辺の交通量を減らしたかった。そこでバス便を増やし、歩道を広げ、安全な自転車置き場を追加した。すると通勤者たちは徐々に、都心への短距離移動で自家用車に頼らなくなった。",
+    "audioText": "The city wanted to reduce traffic near the station. It increased bus service, widened sidewalks, and added secure bicycle parking. Gradually, commuters stopped relying on private cars for short trips downtown.",
+    "tags": [
+      "detail"
+    ],
+    "subcategory": "long-gap-beta"
+  },
+  {
+    "id": "lg008",
+    "section": "long-gap",
+    "difficulty": "standard",
+    "source": "original",
+    "prompt": "The chef wanted diners to notice the natural sweetness of the vegetables. She reduced the amount of salt and avoided heavy sauces. ______, even familiar ingredients seemed more vivid on the plate.",
+    "choices": [
+      "Consequently",
+      "Otherwise",
+      "Moreover",
+      "For example"
+    ],
+    "answerIndex": 0,
+    "explanation": "Consequently 結果。調理法変更の結果として味が際立った。",
+    "translation": "そのシェフは、客に野菜本来の甘みを感じてほしいと考えた。そこで塩を減らし、重いソースを避けた。その結果、見慣れた食材でさえ皿の上でより鮮やかに感じられた。",
+    "audioText": "The chef wanted diners to notice the natural sweetness of the vegetables. She reduced the amount of salt and avoided heavy sauces. Consequently, even familiar ingredients seemed more vivid on the plate.",
+    "tags": [
+      "main-idea"
+    ],
+    "subcategory": "long-gap-beta"
+  },
+  {
+    "id": "lg009",
+    "section": "long-gap",
+    "difficulty": "practical",
+    "source": "original",
+    "prompt": "At first, the nonprofit measured success only by the number of meals it distributed. Later, staff members realized that many clients returned because they also needed housing advice and legal support. ______, the organization broadened its program rather than simply expanding food delivery.",
+    "choices": [
+      "Eventually",
+      "Instead",
+      "Similarly",
+      "In addition"
+    ],
+    "answerIndex": 0,
+    "explanation": "Eventually は認識の変化を経た後の方針転換に合う。",
+    "translation": "その非営利団体は当初、配った食事の数だけで成果を測っていた。だが後に、住居相談や法的支援も必要として多くの利用者が戻ってくることに職員たちは気づいた。やがて団体は、食料配布を増やすだけでなく、支援プログラム全体を広げた。",
+    "audioText": "At first, the nonprofit measured success only by the number of meals it distributed. Later, staff members realized that many clients returned because they also needed housing advice and legal support. Eventually, the organization broadened its program rather than simply expanding food delivery.",
+    "tags": [
+      "inference"
+    ],
+    "subcategory": "long-gap-beta"
+  },
+  {
+    "id": "lg010",
+    "section": "long-gap",
+    "difficulty": "basic",
+    "source": "original",
+    "prompt": "The travel guide praised the mountain village for its quiet beauty. ______, it warned visitors that most shops closed before sunset and public transportation was limited in winter.",
+    "choices": [
+      "At the same time",
+      "For this reason",
+      "Likewise",
+      "After all"
+    ],
+    "answerIndex": 0,
+    "explanation": "At the same time は評価と注意点を併記する自然なつなぎ。",
+    "translation": "その旅行案内書は山村の静かな美しさを称賛していた。同時に、ほとんどの店が日没前に閉まり、冬は公共交通が限られるとも訪問者に注意していた。",
+    "audioText": "The travel guide praised the mountain village for its quiet beauty. At the same time, it warned visitors that most shops closed before sunset and public transportation was limited in winter.",
+    "tags": [
+      "detail"
+    ],
+    "subcategory": "long-gap-beta"
+  },
+  {
+    "id": "lg011",
+    "section": "long-gap",
+    "difficulty": "standard",
+    "source": "original",
+    "prompt": "Several engineers doubted that the old bridge could be restored safely. Detailed scans later showed that the main supports were stronger than expected, though the outer surface was badly worn. ______, the city chose renovation over demolition.",
+    "choices": [
+      "In the end",
+      "For example",
+      "By contrast",
+      "Still"
+    ],
+    "answerIndex": 0,
+    "explanation": "In the end は検討の末の最終判断に合う。",
+    "translation": "その古い橋が安全に修復できるか疑う技術者も何人かいた。だが詳しい調査の結果、表面はひどく傷んでいたものの、主な支柱は予想以上にしっかりしていることが分かった。最終的に市は解体ではなく改修を選んだ。",
+    "audioText": "Several engineers doubted that the old bridge could be restored safely. Detailed scans later showed that the main supports were stronger than expected, though the outer surface was badly worn. In the end, the city chose renovation over demolition.",
+    "tags": [
+      "main-idea"
+    ],
+    "subcategory": "long-gap-beta"
+  },
+  {
+    "id": "lg012",
+    "section": "long-gap",
+    "difficulty": "practical",
+    "source": "original",
+    "prompt": "The professor encouraged students to challenge the theory presented in class. She believed that repeating a conclusion was less valuable than testing where it failed. ______, many of her seminars ended not with agreement but with sharper, better-supported questions.",
+    "choices": [
+      "As a result",
+      "Instead",
+      "Likewise",
+      "Previously"
+    ],
+    "answerIndex": 0,
+    "explanation": "As a result。授業方針の帰結として、より鋭い問いで終わる。",
+    "translation": "その教授は学生たちに、授業で示された理論に異議を唱えるよう勧めていた。結論を繰り返すより、どこでその理論が成り立たないかを試す方が価値があると考えていたからだ。その結果、彼女のゼミの多くは合意ではなく、より鋭く根拠のある問いで終わった。",
+    "audioText": "The professor encouraged students to challenge the theory presented in class. She believed that repeating a conclusion was less valuable than testing where it failed. As a result, many of her seminars ended not with agreement but with sharper, better-supported questions.",
+    "tags": [
+      "inference"
+    ],
+    "subcategory": "long-gap-beta"
   }
 ]

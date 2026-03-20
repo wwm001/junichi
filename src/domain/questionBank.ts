@@ -18,31 +18,91 @@ function seededShuffle<T>(items: T[], seed: number): T[] {
   return result;
 }
 
-function scoreQuestion(question: Question, progress: AppProgress, now: Date): number {
+function scoreQuestion(question: Question, progress: AppProgress, now: Date, prioritizedIds: Set<string> = new Set()): number {
   const entry = progress.entries[question.id] ?? createInitialProgress(question.id, now);
   const attempts = entry.correctCount + entry.wrongCount;
   const dueBoost = isDue(entry, now) ? 500 : 0;
   const unseenBoost = attempts === 0 ? 150 : 0;
   const weaknessBoost = entry.wrongCount * 40 - entry.correctCount * 10;
-  return dueBoost + unseenBoost + weaknessBoost;
+  const prioritizedBoost = prioritizedIds.has(question.id) ? 220 : 0;
+  return dueBoost + unseenBoost + weaknessBoost + prioritizedBoost;
+}
+
+function buildWeightedCandidates(params: {
+  questions: Question[];
+  difficulty: Difficulty;
+  progress: AppProgress;
+  now: Date;
+  prioritizedIds?: Set<string>;
+}): Question[] {
+  return params.questions
+    .filter((question) => adjacentDifficultyMap[params.difficulty].includes(question.difficulty))
+    .map((question, index) => ({ question, score: scoreQuestion(question, params.progress, params.now, params.prioritizedIds) + index }))
+    .sort((a, b) => b.score - a.score)
+    .map((row) => row.question);
 }
 
 export function getQuestionsBySection(questions: Question[], section: Question['section']): Question[] {
   return questions.filter((question) => question.section === section);
 }
 
-export function selectTrainingQuestions(params: { questions: Question[]; difficulty: Difficulty; progress: AppProgress; practiceCount: number; miniTestCount: number; now?: Date; seed?: number; }): { practiceQuestions: Question[]; miniTestQuestions: Question[] } {
+export function selectPracticeRoundQuestions(params: {
+  questions: Question[];
+  difficulty: Difficulty;
+  progress: AppProgress;
+  count: number;
+  excludeIds?: Set<string>;
+  now?: Date;
+  seed?: number;
+  prioritizedIds?: Set<string>;
+}): Question[] {
   const now = params.now ?? new Date();
   const seed = params.seed ?? now.getTime();
-  const candidates = params.questions.filter((question) => adjacentDifficultyMap[params.difficulty].includes(question.difficulty));
-  const weighted = candidates
-    .map((question, index) => ({ question, score: scoreQuestion(question, params.progress, now) + index }))
-    .sort((a, b) => b.score - a.score)
-    .map((row) => row.question);
-  const practiceQuestions = seededShuffle(weighted, seed).slice(0, params.practiceCount);
-  const remaining = weighted.filter((question) => !practiceQuestions.some((picked) => picked.id === question.id));
-  const miniBase = remaining.length >= params.miniTestCount ? remaining : weighted;
-  const miniTestQuestions = seededShuffle(miniBase, seed + 99).filter((q) => !practiceQuestions.some((picked) => picked.id === q.id)).slice(0, params.miniTestCount);
+  const excludeIds = params.excludeIds ?? new Set<string>();
+  const weighted = buildWeightedCandidates({
+    questions: params.questions,
+    difficulty: params.difficulty,
+    progress: params.progress,
+    now,
+    prioritizedIds: params.prioritizedIds
+  });
+  const preferred = weighted.filter((question) => !excludeIds.has(question.id));
+  const fallback = weighted.filter((question) => excludeIds.has(question.id));
+  const pool = preferred.length >= params.count ? preferred : [...preferred, ...fallback];
+  return seededShuffle(pool, seed).slice(0, params.count);
+}
+
+export function selectTrainingQuestions(params: {
+  questions: Question[];
+  difficulty: Difficulty;
+  progress: AppProgress;
+  practiceCount: number;
+  miniTestCount: number;
+  now?: Date;
+  seed?: number;
+  prioritizedIds?: Set<string>;
+}): { practiceQuestions: Question[]; miniTestQuestions: Question[] } {
+  const now = params.now ?? new Date();
+  const seed = params.seed ?? now.getTime();
+  const practiceQuestions = selectPracticeRoundQuestions({
+    questions: params.questions,
+    difficulty: params.difficulty,
+    progress: params.progress,
+    count: params.practiceCount,
+    now,
+    seed,
+    prioritizedIds: params.prioritizedIds
+  });
+  const miniTestQuestions = selectPracticeRoundQuestions({
+    questions: params.questions,
+    difficulty: params.difficulty,
+    progress: params.progress,
+    count: params.miniTestCount,
+    excludeIds: new Set(practiceQuestions.map((question) => question.id)),
+    now,
+    seed: seed + 99,
+    prioritizedIds: params.prioritizedIds
+  });
   return { practiceQuestions, miniTestQuestions };
 }
 

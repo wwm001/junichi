@@ -331,7 +331,9 @@ export function createBrowserSpeechService(): SpeechService {
     },
 
     stop: () => {
+      speakAttemptId += 1;
       softResetSynth();
+      lastError = null;
     },
 
     isAvailable: () => {

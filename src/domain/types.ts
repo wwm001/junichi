@@ -67,6 +67,18 @@ export interface QuestionProgressSummary {
   correctCount: number;
 }
 
+export interface WeakRecommendation {
+  questionId: string;
+  word: string;
+  meaningText: string;
+  translation: string;
+  partOfSpeech: string;
+  accuracy: number | null;
+  attempts: number;
+  wrongCount: number;
+  isDue: boolean;
+}
+
 export type SessionMode = 'training' | 'mini-test' | 'mock-test';
 
 export interface SessionRecord {
@@ -105,6 +117,25 @@ export interface StreakInfo {
   lastStudiedOn: string | null;
 }
 
+export interface RankCheckpoint {
+  label: string;
+  current: number;
+  target: number;
+  unit: '%' | '回' | '日';
+  done: boolean;
+}
+
+export interface SectionRankInfo {
+  section: QuestionSection;
+  current: 'J5' | 'J4' | 'J3' | 'J2' | 'J1' | 'S';
+  label: string;
+  attemptedQuestions: number;
+  masteryRate: number;
+  dueCount: number;
+  progressPercent: number;
+  nextRequirement: string;
+}
+
 export interface RankInfo {
   current: 'J5' | 'J4' | 'J3' | 'J2' | 'J1' | 'S';
   label: string;
@@ -114,6 +145,9 @@ export interface RankInfo {
   miniTestAccuracy: number;
   mockTestAccuracy: number;
   streak: StreakInfo;
+  progressPercent: number;
+  checklists: RankCheckpoint[];
+  sectionRank: SectionRankInfo;
 }
 
 export interface SessionSummary {

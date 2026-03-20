@@ -93,8 +93,6 @@ export function QuizCard({
         </p>
       )}
 
-      {voiceDebugLabel && <p className="note note-debug">DEV voice: {voiceDebugLabel}</p>}
-
       <div className="choices" role="list" aria-label="意味の選択肢">
         {question.choices.map((choice) => {
           const isCorrect = choice === question.item.meaningJa;
@@ -144,6 +142,8 @@ export function QuizCard({
           </div>
         </div>
       )}
+
+      {voiceDebugLabel && <p className="note note-debug note-debug-bottom">DEV voice: {voiceDebugLabel}</p>}
     </section>
   );
 }
