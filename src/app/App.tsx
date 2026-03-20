@@ -39,13 +39,34 @@ const learningStorage = createBrowserLearningStorage();
 const appBuildVersion = __APP_VERSION__;
 
 const TRAINING_TIME_LIMIT_SECONDS = 5 * 60;
-const MOCK_TIME_LIMIT_SECONDS = 18 * 60;
 const TRAINING_PRACTICE_COUNT = 6;
 const TRAINING_MINI_TEST_COUNT = 3;
-const MOCK_QUESTION_COUNT = 18;
 const TRAINING_MINI_TEST_TRIGGER_SECONDS = 80;
 const AUTO_SPEAK_DELAY_MS = 160;
 const TRAINING_SECTIONS = ['vocab-gap', 'long-gap'] as const;
+
+const MOCK_TEST_CONFIG = {
+  'vocab-gap': {
+    questionCount: 18,
+    timeLimitSeconds: 18 * 60,
+    title: '語彙18問モード',
+    shortLabel: '語彙18問',
+    introDescription: '本番さながらに、途中解説なし・18問・時間制限ありで現在地を測ります。語感と意味の芯をどこまで維持できるかを見るレーンです。',
+    sessionWarning: '疑似テスト中は途中解説なしです。テンポを崩さず、本番のように前へ進みます。',
+    resultHeading: '語彙18問モード採点完了',
+    weaknessModeLabel: '疑似テストの取りこぼし優先モード'
+  },
+  'long-gap': {
+    questionCount: 8,
+    timeLimitSeconds: 10 * 60,
+    title: '長文語句補充β 8問モード',
+    shortLabel: '長文β 8問',
+    introDescription: '段落の流れ・逆接・因果・結論の向きを見ながら、8問をまとめて解く長文語句補充β専用レーンです。途中採点なしで文脈判断の安定度を測ります。',
+    sessionWarning: '長文語句補充βの疑似テストです。段落の流れを切らさず、迷っても前へ進みます。',
+    resultHeading: '長文語句補充β 8問モード採点完了',
+    weaknessModeLabel: '長文β疑似テストの取りこぼし優先モード'
+  }
+} as const;
 
 type Screen =
   | 'home'
@@ -63,6 +84,7 @@ type SessionEndReason = 'completed' | 'time-up';
 
 
 type SupportedTrainingSection = (typeof TRAINING_SECTIONS)[number];
+type MockSectionConfig = (typeof MOCK_TEST_CONFIG)[SupportedTrainingSection];
 
 function isSupportedTrainingSection(section: Question['section']): section is SupportedTrainingSection {
   return (TRAINING_SECTIONS as readonly string[]).includes(section);
@@ -78,6 +100,16 @@ function buildSectionLead(section: SupportedTrainingSection): string {
   return section === 'vocab-gap'
     ? 'v1.1 の主実装対象。語感と基本義を反復で固めます。'
     : 'v1.2 β の先行実装。段落の流れから最も自然な選択肢を拾います。';
+}
+
+function getMockSectionConfig(section: SupportedTrainingSection): MockSectionConfig {
+  return MOCK_TEST_CONFIG[section];
+}
+
+function buildMockSectionDescription(section: SupportedTrainingSection): string {
+  return section === 'vocab-gap'
+    ? '語感・意味・誤答耐性を18問で測る本番寄りレーン。'
+    : '段落の流れ・逆接・因果を8問で測る長文β専用レーン。';
 }
 
 interface AnswerRecord {
@@ -112,11 +144,13 @@ interface TrainingStartOptions {
 
 interface MockRuntime {
   id: string;
+  section: SupportedTrainingSection;
   questions: Question[];
   currentIndex: number;
   answers: AnswerRecord[];
   progressSnapshot: AppProgress;
   remainingSeconds: number;
+  timeLimitSeconds: number;
 }
 
 interface TrainingResultPayload {
@@ -132,6 +166,7 @@ interface TrainingResultPayload {
 }
 
 interface MockResultPayload {
+  section: SupportedTrainingSection;
   sessionRecord: SessionRecord;
   mockRecord: TestRecord;
   rankInfo: RankInfo;
@@ -328,6 +363,7 @@ export function App(): JSX.Element {
   const [screen, setScreen] = useState<Screen>('home');
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>(() => getRecommendedDifficulty(learningStorage.load()));
   const [selectedTrainingSection, setSelectedTrainingSection] = useState<SupportedTrainingSection>('vocab-gap');
+  const [selectedMockSection, setSelectedMockSection] = useState<SupportedTrainingSection>('vocab-gap');
   const [trainingRuntime, setTrainingRuntime] = useState<TrainingRuntime | null>(null);
   const [mockRuntime, setMockRuntime] = useState<MockRuntime | null>(null);
   const [selectedChoiceIndex, setSelectedChoiceIndex] = useState<number | null>(null);
@@ -370,6 +406,7 @@ export function App(): JSX.Element {
   const mockUnlocked = useMemo(() => isMockTestUnlocked(learningState), [learningState]);
   const latestMiniTest = learningState.miniTests[learningState.miniTests.length - 1] ?? null;
   const latestMockTest = learningState.mockTests[learningState.mockTests.length - 1] ?? null;
+  const selectedMockConfig = useMemo(() => getMockSectionConfig(selectedMockSection), [selectedMockSection]);
   const recentSessions = useMemo(() => [...learningState.sessions].slice(-6).reverse(), [learningState.sessions]);
 
   const currentTrainingQuestion = useMemo(() => {
@@ -575,11 +612,11 @@ export function App(): JSX.Element {
       const correctAnswers = countCorrectAnswers(runtime.answers);
       const accuracy = runtime.answers.length === 0 ? 0 : Math.round((correctAnswers / runtime.answers.length) * 100);
       const nowIso = new Date().toISOString();
-      const durationSeconds = MOCK_TIME_LIMIT_SECONDS - runtime.remainingSeconds;
+      const durationSeconds = runtime.timeLimitSeconds - runtime.remainingSeconds;
       const sessionRecord: SessionRecord = {
         id: runtime.id,
         mode: 'mock-test',
-        section: 'vocab-gap',
+        section: runtime.section,
         totalQuestions: runtime.answers.length,
         correctAnswers,
         accuracy,
@@ -589,7 +626,7 @@ export function App(): JSX.Element {
       const mockRecord: TestRecord = {
         id: `${runtime.id}-mock`,
         type: 'mock-test',
-        section: 'vocab-gap',
+        section: runtime.section,
         totalQuestions: runtime.answers.length,
         correctAnswers,
         accuracy,
@@ -610,6 +647,7 @@ export function App(): JSX.Element {
       setSelectedChoiceIndex(null);
       setSessionStatusMessage(null);
       setLastMockResult({
+        section: runtime.section,
         sessionRecord,
         mockRecord,
         rankInfo: nextRankInfo,
@@ -744,23 +782,26 @@ export function App(): JSX.Element {
 
   const startMockTest = (): void => {
     if (!mockUnlocked) return;
+    const config = getMockSectionConfig(selectedMockSection);
     const questions = selectMockTestQuestions({
       questions: questionBank,
-      section: 'vocab-gap',
-      count: MOCK_QUESTION_COUNT,
+      section: selectedMockSection,
+      count: config.questionCount,
       progress: learningState.progress
     });
     setMockRuntime({
       id: createId('mock'),
+      section: selectedMockSection,
       questions,
       currentIndex: 0,
       answers: [],
       progressSnapshot: learningState.progress,
-      remainingSeconds: MOCK_TIME_LIMIT_SECONDS
+      remainingSeconds: config.timeLimitSeconds,
+      timeLimitSeconds: config.timeLimitSeconds
     });
     setSelectedChoiceIndex(null);
     setLastMockResult(null);
-    setSessionStatusMessage('疑似テスト開始。ここからは途中解説なしで現在地を測ります。');
+    setSessionStatusMessage(`${sectionLabel(selectedMockSection)}の疑似テスト開始。ここからは途中解説なしで現在地を測ります。`);
     setScreen('mock-session');
   };
 
@@ -940,7 +981,7 @@ export function App(): JSX.Element {
         <>
           <header className="hero card">
             <p className="eyebrow">英検準一級 合格育成アプリ</p>
-            <h1>準一 JUNICHI v1.1</h1>
+            <h1>準一 JUNICHI v1.2</h1>
             <p className="subtitle">
               5分トレーニングで語彙を積み上げ、疑似テストで現在地を測る。日々の習慣化を司令塔のように案内する版です。
             </p>
@@ -1128,7 +1169,7 @@ export function App(): JSX.Element {
                 <strong>疑似テスト</strong>
                 <span>
                   {mockUnlocked
-                    ? '語彙18問・時間制限あり'
+                    ? '語彙18問 / 長文β8問 から選択'
                     : `解放まであと${Math.max(0, 3 - learningState.sessions.filter((session) => session.mode === 'training').length)}回のトレーニング`}
                 </span>
               </button>
@@ -1489,53 +1530,74 @@ export function App(): JSX.Element {
       )}
 
       {screen === 'mock-intro' && (
-        <section className="card feature-card">
-          <div className="card-header">
-            <div>
-              <p className="section-label">疑似テスト</p>
-              <h2>語彙18問モード</h2>
-            </div>
-            <button type="button" className="ghost-button" onClick={navigateHome}>
-              ホームへ戻る
-            </button>
-          </div>
-          <p className="subtitle compact">
-            本番さながらに、途中解説なし・18問・時間制限ありで現在地を測ります。v1.1 では語彙セクションのみを先行実装しています。
-          </p>
-          <div className="stats-grid stats-grid-wide">
-            <article className="stat-card">
-              <p className="stat-label">問題数</p>
-              <p className="stat-value">18問</p>
-            </article>
-            <article className="stat-card">
-              <p className="stat-label">制限時間</p>
-              <p className="stat-value">18分</p>
-            </article>
-            <article className="stat-card">
-              <p className="stat-label">解放条件</p>
-              <p className="stat-value">5分トレーニング3回</p>
-            </article>
-            <article className="stat-card">
-              <p className="stat-label">達成度</p>
-              <p className="stat-value">{learningState.sessions.filter((session) => session.mode === 'training').length} / 3</p>
-            </article>
-          </div>
-          {!mockUnlocked && (
-            <p className="note note-warning">
-              あと {Math.max(0, 3 - learningState.sessions.filter((session) => session.mode === 'training').length)} 回のトレーニングで解放されます。
-            </p>
-          )}
-          <div className="action-row">
-            <button type="button" className="primary-button" disabled={!mockUnlocked} onClick={startMockTest}>
-              疑似テスト開始
-            </button>
-            {!mockUnlocked && (
-              <button type="button" className="ghost-button" onClick={() => startTraining(recommendedDifficulty)}>
-                先に5分トレーニングへ
+        <>
+          <section className="card feature-card">
+            <div className="card-header">
+              <div>
+                <p className="section-label">疑似テスト</p>
+                <h2>{selectedMockConfig.title}</h2>
+              </div>
+              <button type="button" className="ghost-button" onClick={navigateHome}>
+                ホームへ戻る
               </button>
+            </div>
+            <p className="subtitle compact">{selectedMockConfig.introDescription}</p>
+          </section>
+          <section className="card">
+            <p className="section-label">セクション</p>
+            <div className="mode-grid">
+              {(TRAINING_SECTIONS as readonly SupportedTrainingSection[]).map((section) => {
+                const config = getMockSectionConfig(section);
+                return (
+                  <button
+                    key={section}
+                    type="button"
+                    className={`mode-card${selectedMockSection === section ? ' is-selected' : ''}`}
+                    onClick={() => setSelectedMockSection(section)}
+                  >
+                    <strong>{config.title}</strong>
+                    <span>{buildMockSectionDescription(section)}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+          <section className="card">
+            <div className="stats-grid stats-grid-wide">
+              <article className="stat-card">
+                <p className="stat-label">問題数</p>
+                <p className="stat-value">{selectedMockConfig.questionCount}問</p>
+              </article>
+              <article className="stat-card">
+                <p className="stat-label">制限時間</p>
+                <p className="stat-value">{Math.floor(selectedMockConfig.timeLimitSeconds / 60)}分</p>
+              </article>
+              <article className="stat-card">
+                <p className="stat-label">解放条件</p>
+                <p className="stat-value">5分トレーニング3回</p>
+              </article>
+              <article className="stat-card">
+                <p className="stat-label">達成度</p>
+                <p className="stat-value">{learningState.sessions.filter((session) => session.mode === 'training').length} / 3</p>
+              </article>
+            </div>
+            {!mockUnlocked && (
+              <p className="note note-warning">
+                あと {Math.max(0, 3 - learningState.sessions.filter((session) => session.mode === 'training').length)} 回のトレーニングで解放されます。
+              </p>
             )}
-          </div>
-        </section>
+            <div className="action-row">
+              <button type="button" className="primary-button" disabled={!mockUnlocked} onClick={startMockTest}>
+                {selectedMockConfig.shortLabel} を開始
+              </button>
+              {!mockUnlocked && (
+                <button type="button" className="ghost-button" onClick={() => startTraining(recommendedDifficulty, { section: selectedMockSection })}>
+                  先に5分トレーニングへ
+                </button>
+              )}
+            </div>
+          </section>
+        </>
       )}
 
       {screen === 'mock-session' && mockRuntime && currentMockQuestion && (
@@ -1543,7 +1605,7 @@ export function App(): JSX.Element {
           <div className="card-header">
             <div>
               <p className="section-label">疑似テスト</p>
-              <h2>語彙18問モード</h2>
+              <h2>{getMockSectionConfig(mockRuntime.section).title}</h2>
             </div>
             <div className="session-header-meta">
               <span className="pill">
@@ -1556,7 +1618,7 @@ export function App(): JSX.Element {
             <span className="session-meter-fill" style={{ width: `${mockProgressPercent}%` }} />
           </div>
           {sessionStatusMessage && <p className="note note-info">{sessionStatusMessage}</p>}
-          <p className="note note-warning">疑似テスト中は途中解説なしです。テンポを崩さず、本番のように前へ進みます。</p>
+          <p className="note note-warning">{getMockSectionConfig(mockRuntime.section).sessionWarning}</p>
           <p className="question-prompt">{currentMockQuestion.prompt}</p>
           <button
             className={`speak-button${!speechService.isAvailable() ? ' is-unavailable' : ''}${speechPlaying ? ' is-playing' : ''}`}
@@ -1601,7 +1663,7 @@ export function App(): JSX.Element {
             <div className="card-header">
               <div>
                 <p className="section-label">疑似テスト結果</p>
-                <h2>語彙18問モード採点完了</h2>
+                <h2>{getMockSectionConfig(lastMockResult.section).resultHeading}</h2>
               </div>
               <span className="pill pill-primary">正答率 {lastMockResult.mockRecord.accuracy}%</span>
             </div>
@@ -1662,9 +1724,9 @@ export function App(): JSX.Element {
                 className="primary-button"
                 onClick={() =>
                   startTraining(recommendedDifficulty, {
-                    section: 'vocab-gap',
+                    section: lastMockResult.section,
                     prioritizedQuestionIds: lastMockResult.wrongQuestions.map((question) => question.id),
-                    sourceLabel: '疑似テストの取りこぼし優先モード'
+                    sourceLabel: getMockSectionConfig(lastMockResult.section).weaknessModeLabel
                   })
                 }
               >
