@@ -5,6 +5,7 @@ import type {
   LearningState,
   Question,
   QuestionProgressSummary,
+  QuestionSection,
   RankCheckpoint,
   RankInfo,
   ReviewRating,
@@ -16,6 +17,13 @@ import type {
 } from './types';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
+
+const TRAINING_SECTIONS: QuestionSection[] = ['vocab-gap', 'long-gap'];
+
+function sectionLabel(section: QuestionSection): string {
+  return section === 'vocab-gap' ? '語彙補充' : section === 'long-gap' ? '長文語句補充β' : 'その他';
+}
+
 const rankOrder = ['J5', 'J4', 'J3', 'J2', 'J1', 'S'] as const;
 type RankKey = (typeof rankOrder)[number];
 
@@ -176,8 +184,9 @@ function buildRankRule(totalSessions: number, trainingAccuracy: number, miniAccu
   };
 }
 
-function computeSectionRankInfo(state: LearningState): SectionRankInfo {
-  const entries = Object.values(state.progress.entries);
+function computeSectionRankInfo(state: LearningState, questions: Question[], section: QuestionSection): SectionRankInfo {
+  const sectionQuestionIds = new Set(questions.filter((question) => question.section === section).map((question) => question.id));
+  const entries = Object.values(state.progress.entries).filter((entry) => sectionQuestionIds.has(entry.itemId));
   const attemptedEntries = entries.filter((entry) => entry.correctCount + entry.wrongCount > 0);
   const attemptedQuestions = attemptedEntries.length;
   const masteredQuestions = attemptedEntries.filter((entry) => {
@@ -187,6 +196,54 @@ function computeSectionRankInfo(state: LearningState): SectionRankInfo {
   }).length;
   const masteryRate = attemptedQuestions === 0 ? 0 : Math.round((masteredQuestions / attemptedQuestions) * 100);
   const dueCount = attemptedEntries.filter((entry) => isDue(entry)).length;
+
+  if (section === 'long-gap') {
+    let current: RankKey = 'J5';
+    let nextRequirement = 'まずは3問以上に触れて、接続・因果・逆接の流れを拾う';
+    let progressPercent = clamp(Math.round(((attemptedQuestions / 3) * 50) + ((masteryRate / 20) * 50)), 0, 100);
+
+    if (attemptedQuestions >= 12 && masteryRate >= 80 && dueCount <= 1) {
+      current = 'S';
+      nextRequirement = '長文語句補充βの最上位に到達済み';
+      progressPercent = 100;
+    } else if (attemptedQuestions >= 10 && masteryRate >= 70) {
+      current = 'J1';
+      nextRequirement = '学習問10問以上、定着率80%以上、復習対象1問以下';
+      progressPercent = clamp(Math.round(((attemptedQuestions / 12) * 40) + ((masteryRate / 80) * 40) + (((Math.max(0, 4 - dueCount)) / 4) * 20)), 0, 100);
+    } else if (attemptedQuestions >= 8 && masteryRate >= 58) {
+      current = 'J2';
+      nextRequirement = '学習問10問以上、定着率70%以上';
+      progressPercent = clamp(Math.round(((attemptedQuestions / 10) * 50) + ((masteryRate / 70) * 50)), 0, 100);
+    } else if (attemptedQuestions >= 6 && masteryRate >= 45) {
+      current = 'J3';
+      nextRequirement = '学習問8問以上、定着率58%以上';
+      progressPercent = clamp(Math.round(((attemptedQuestions / 8) * 50) + ((masteryRate / 58) * 50)), 0, 100);
+    } else if (attemptedQuestions >= 3 || masteryRate >= 20) {
+      current = 'J4';
+      nextRequirement = '学習問6問以上、定着率45%以上';
+      progressPercent = clamp(Math.round(((attemptedQuestions / 6) * 50) + ((masteryRate / 45) * 50)), 0, 100);
+    }
+
+    const labels: Record<RankKey, string> = {
+      J5: '未整備。接続語と因果の流れを拾う準備段階。',
+      J4: '流れ把握の入口。逆接と結論の切替に気づき始めた。',
+      J3: '段落追従。文脈の向きに沿って選択肢を絞れている。',
+      J2: '文脈安定。接続・因果・対比の判断が固まりつつある。',
+      J1: '長文実戦接近。段落の流れが得点源になり始めた。',
+      S: '長文語句補充β投入可。文脈判断が高水準で安定。'
+    };
+
+    return {
+      section,
+      current,
+      label: labels[current],
+      attemptedQuestions,
+      masteryRate,
+      dueCount,
+      progressPercent,
+      nextRequirement
+    };
+  }
 
   let current: RankKey = 'J5';
   let nextRequirement = 'まずは4語以上に触れて、語感と意味を結びつける';
@@ -224,7 +281,7 @@ function computeSectionRankInfo(state: LearningState): SectionRankInfo {
   };
 
   return {
-    section: 'vocab-gap',
+    section,
     current,
     label: labels[current],
     attemptedQuestions,
@@ -281,7 +338,7 @@ function difficultyLabel(difficulty: Difficulty): string {
   return difficulty === 'basic' ? '基礎' : difficulty === 'standard' ? '標準' : '実戦';
 }
 
-export function computeRankInfo(state: LearningState): RankInfo {
+export function computeRankInfo(state: LearningState, questions: Question[]): RankInfo {
   const streak = computeStreakInfo(state.sessions);
   const trainingSessions = state.sessions.filter((s) => s.mode === 'training');
   const trainingAccuracy = averageAccuracy(trainingSessions);
@@ -291,7 +348,8 @@ export function computeRankInfo(state: LearningState): RankInfo {
 
   const rankRule = buildRankRule(totalSessions, trainingAccuracy, miniAccuracy, mockAccuracy);
   const checklists = computeChecklistProgress(rankRule.checklists);
-  const sectionRank = computeSectionRankInfo(state);
+  const sectionRanks = TRAINING_SECTIONS.map((section) => computeSectionRankInfo(state, questions, section));
+  const sectionRank = sectionRanks.find((item) => item.section === 'vocab-gap') ?? sectionRanks[0];
 
   return {
     current: rankRule.rank,
@@ -304,7 +362,8 @@ export function computeRankInfo(state: LearningState): RankInfo {
     streak,
     progressPercent: computeProgressPercent(checklists),
     checklists,
-    sectionRank
+    sectionRank,
+    sectionRanks
   };
 }
 
@@ -322,8 +381,12 @@ export function isMockTestUnlocked(state: LearningState): boolean {
   return state.sessions.filter((s) => s.mode === 'training').length >= 3;
 }
 
-export function buildNextActionLabel(state: LearningState): string {
+export function buildNextActionLabel(questions: Question[], state: LearningState): string {
   const difficulty = getRecommendedDifficulty(state);
+  const recommendations = getWeakRecommendations(questions, state, 1);
+  if (recommendations.length > 0 && recommendations[0].isDue) {
+    return `${recommendations[0].sectionLabel}の復習優先${difficultyLabel(difficulty)}トレーニング`;
+  }
   const dueCount = Object.values(state.progress.entries).filter((entry) => isDue(entry)).length;
   if (dueCount >= 5) return `復習優先の${difficultyLabel(difficulty)}トレーニング`;
   if (!isMockTestUnlocked(state)) return `疑似テスト解放へ向けた${difficultyLabel(difficulty)}トレーニング`;
@@ -336,7 +399,7 @@ export function buildWeaknessHint(questions: Question[], state: LearningState): 
     .filter(({ s }) => s.attempts > 0)
     .sort((a, b) => (a.s.accuracy ?? 100) - (b.s.accuracy ?? 100) || b.s.wrongCount - a.s.wrongCount)[0];
   if (!weakest) return '初回学習フェーズ。まずは基礎レーンから着手。';
-  return `弱点候補: ${weakest.q.choices[weakest.q.answerIndex]}（正答率 ${weakest.s.accuracy ?? 0}%）`;
+  return `${sectionLabel(weakest.q.section)}の弱点候補: ${weakest.q.choices[weakest.q.answerIndex]}（正答率 ${weakest.s.accuracy ?? 0}%）`;
 }
 
 export function getWeakRecommendations(questions: Question[], state: LearningState, limit = 3): WeakRecommendation[] {
@@ -354,6 +417,8 @@ export function getWeakRecommendations(questions: Question[], state: LearningSta
     .slice(0, limit)
     .map(({ question, summary }) => ({
       questionId: question.id,
+      section: question.section,
+      sectionLabel: sectionLabel(question.section),
       word: question.choices[question.answerIndex],
       meaningText: buildMeaningText(question),
       translation: question.translation ?? '',

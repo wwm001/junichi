@@ -69,6 +69,8 @@ export interface QuestionProgressSummary {
 
 export interface WeakRecommendation {
   questionId: string;
+  section: QuestionSection;
+  sectionLabel: string;
   word: string;
   meaningText: string;
   translation: string;
@@ -148,6 +150,7 @@ export interface RankInfo {
   progressPercent: number;
   checklists: RankCheckpoint[];
   sectionRank: SectionRankInfo;
+  sectionRanks: SectionRankInfo[];
 }
 
 export interface SessionSummary {

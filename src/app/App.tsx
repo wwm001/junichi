@@ -257,11 +257,17 @@ function buildPromotionMessage(previousRank: RankInfo, nextRank: RankInfo): stri
   if (nextIndex > previousIndex) {
     return `総合ランクが ${previousRank.current} → ${nextRank.current} に上がりました。次の5分で勢いを固めましょう。`;
   }
-  const previousSectionIndex = rankSequence.indexOf(previousRank.sectionRank.current);
-  const nextSectionIndex = rankSequence.indexOf(nextRank.sectionRank.current);
-  if (nextSectionIndex > previousSectionIndex) {
-    return `語彙セクションランクが ${previousRank.sectionRank.current} → ${nextRank.sectionRank.current} に上がりました。弱点回収が効いています。`;
+
+  for (const nextSectionRank of nextRank.sectionRanks) {
+    const previousSectionRank = previousRank.sectionRanks.find((item) => item.section === nextSectionRank.section);
+    if (!previousSectionRank) continue;
+    const previousSectionIndex = rankSequence.indexOf(previousSectionRank.current);
+    const nextSectionIndex = rankSequence.indexOf(nextSectionRank.current);
+    if (nextSectionIndex > previousSectionIndex) {
+      return `${sectionLabel(nextSectionRank.section)}ランクが ${previousSectionRank.current} → ${nextSectionRank.current} に上がりました。弱点回収が効いています。`;
+    }
   }
+
   return null;
 }
 
@@ -271,8 +277,8 @@ function formatChecklistValue(current: number, target: number, unit: '%' | '回'
 
 function buildSessionLabel(session: SessionRecord): string {
   if (session.mode === 'mock-test') return '疑似テスト';
-  if (session.mode === 'mini-test') return 'ミニテスト';
-  return `${difficultyLabel(session.difficulty ?? 'standard')}トレ`;
+  if (session.mode === 'mini-test') return `${sectionLabel(session.section)} ミニテスト`;
+  return `${sectionLabel(session.section)} ${difficultyLabel(session.difficulty ?? 'standard')}トレ`;
 }
 
 function buildTrainingCoachMessage(runtime: TrainingRuntime | null, question: Question | null, summary: QuestionProgressSummary | null): string {
@@ -341,16 +347,26 @@ export function App(): JSX.Element {
     () => Object.fromEntries(questionBank.map((question) => [question.id, question] as const)),
     []
   );
-  const rankInfo = useMemo(() => computeRankInfo(learningState), [learningState]);
+  const rankInfo = useMemo(() => computeRankInfo(learningState, questionBank), [learningState]);
   const dueCount = useMemo(
     () => Object.values(learningState.progress.entries).filter((entry) => new Date(entry.dueAt).getTime() <= Date.now()).length,
     [learningState.progress.entries]
   );
   const recommendedDifficulty = useMemo(() => getRecommendedDifficulty(learningState), [learningState]);
-  const nextActionLabel = useMemo(() => buildNextActionLabel(learningState), [learningState]);
-  const weaknessHint = useMemo(() => buildWeaknessHint(vocabQuestions, learningState), [vocabQuestions, learningState]);
-  const weakRecommendations = useMemo<WeakRecommendation[]>(() => getWeakRecommendations(vocabQuestions, learningState, 3), [vocabQuestions, learningState]);
-  const weakRecommendationIds = useMemo(() => weakRecommendations.map((item) => item.questionId), [weakRecommendations]);
+  const nextActionLabel = useMemo(() => buildNextActionLabel(questionBank, learningState), [learningState]);
+  const weaknessHint = useMemo(() => buildWeaknessHint(questionBank.filter((question) => isSupportedTrainingSection(question.section)), learningState), [learningState]);
+  const weakRecommendations = useMemo<WeakRecommendation[]>(() => getWeakRecommendations(questionBank.filter((question) => isSupportedTrainingSection(question.section)), learningState, 3), [learningState]);
+  const weakRecommendationsBySection = useMemo(() => weakRecommendations.reduce((acc, item) => {
+    if (isSupportedTrainingSection(item.section)) {
+      (acc[item.section] ??= []).push(item);
+    }
+    return acc;
+  }, {} as Partial<Record<SupportedTrainingSection, WeakRecommendation[]>>), [weakRecommendations]);
+  const weakestPrioritySection = useMemo<SupportedTrainingSection>(() => {
+    const first = weakRecommendations[0];
+    return first && isSupportedTrainingSection(first.section) ? first.section : 'vocab-gap';
+  }, [weakRecommendations]);
+  const weakRecommendationIds = useMemo(() => (weakRecommendationsBySection[weakestPrioritySection] ?? []).map((item) => item.questionId), [weakRecommendationsBySection, weakestPrioritySection]);
   const mockUnlocked = useMemo(() => isMockTestUnlocked(learningState), [learningState]);
   const latestMiniTest = learningState.miniTests[learningState.miniTests.length - 1] ?? null;
   const latestMockTest = learningState.mockTests[learningState.mockTests.length - 1] ?? null;
@@ -518,13 +534,13 @@ export function App(): JSX.Element {
         completedAt: nowIso
       };
 
-      const previousRankInfo = computeRankInfo(learningState);
+      const previousRankInfo = computeRankInfo(learningState, questionBank);
       const nextState = finalizeLearningState(learningState, {
         progress: runtime.progressSnapshot,
         addSession: sessionRecord,
         addMiniTest: miniTestRecord
       });
-      const nextRankInfo = computeRankInfo(nextState);
+      const nextRankInfo = computeRankInfo(nextState, questionBank);
       learningStorage.save(nextState);
       setLearningState(nextState);
       setSelectedDifficulty(runtime.difficulty);
@@ -581,13 +597,13 @@ export function App(): JSX.Element {
         completedAt: nowIso
       };
       const wrongIds = new Set(runtime.answers.filter((answer) => !answer.isCorrect).map((answer) => answer.questionId));
-      const previousRankInfo = computeRankInfo(learningState);
+      const previousRankInfo = computeRankInfo(learningState, questionBank);
       const nextState = finalizeLearningState(learningState, {
         progress: runtime.progressSnapshot,
         addSession: sessionRecord,
         addMockTest: mockRecord
       });
-      const nextRankInfo = computeRankInfo(nextState);
+      const nextRankInfo = computeRankInfo(nextState, questionBank);
       learningStorage.save(nextState);
       setLearningState(nextState);
       setMockRuntime(null);
@@ -965,7 +981,7 @@ export function App(): JSX.Element {
             <div className="card-header">
               <div>
                 <p className="section-label">自動推薦</p>
-                <h2>弱点補強の優先3語</h2>
+                <h2>弱点補強の優先3問</h2>
               </div>
               <span className="pill">復習最優先</span>
             </div>
@@ -977,6 +993,7 @@ export function App(): JSX.Element {
                   {weakRecommendations.map((item) => (
                     <article key={item.questionId} className="recommendation-item">
                       <div className="recommendation-head">
+                        <span className={`recommendation-section section-${item.section}`}>{item.sectionLabel}</span>
                         <span className="answer-badge answer-badge-word">{item.word}</span>
                         {item.partOfSpeech && (
                           <span className={`answer-badge answer-badge-pos ${buildPartOfSpeechClassName(item.partOfSpeech)}`}>
@@ -996,9 +1013,15 @@ export function App(): JSX.Element {
                   <button
                     type="button"
                     className="primary-button"
-                    onClick={() => startTraining(recommendedDifficulty, { prioritizedQuestionIds: weakRecommendationIds, sourceLabel: '弱点3語優先モード' })}
+                    onClick={() =>
+                      startTraining(recommendedDifficulty, {
+                        section: weakestPrioritySection,
+                        prioritizedQuestionIds: weakRecommendationIds,
+                        sourceLabel: `${sectionLabel(weakestPrioritySection)}の弱点優先モード`
+                      })
+                    }
                   >
-                    弱点3語を優先した5分へ
+                    {sectionLabel(weakestPrioritySection)}の弱点優先5分へ
                   </button>
                 </div>
               </>
@@ -1032,9 +1055,9 @@ export function App(): JSX.Element {
               ))}
             </div>
             <div className="section-rank-inline">
-              <span className="pill">語彙ランク {rankInfo.sectionRank.current}</span>
-              <span>定着率 {rankInfo.sectionRank.masteryRate}%</span>
-              <span>復習対象 {rankInfo.sectionRank.dueCount}語</span>
+              {rankInfo.sectionRanks.map((sectionRank) => (
+                <span key={sectionRank.section}>{sectionLabel(sectionRank.section)} {sectionRank.current} / 定着率 {sectionRank.masteryRate}% / 復習 {sectionRank.dueCount}問</span>
+              ))}
             </div>
           </section>
 
@@ -1694,7 +1717,7 @@ export function App(): JSX.Element {
                 <p className="section-label">総合指標</p>
                 <h2>現在の到達度</h2>
               </div>
-              <span className="pill">語彙ランク {rankInfo.sectionRank.current}</span>
+              <span className="pill">主ランク {rankInfo.current}</span>
             </div>
             <div className="stats-grid stats-grid-wide">
               <article className="stat-card">
@@ -1736,37 +1759,50 @@ export function App(): JSX.Element {
             <div className="card-header">
               <div>
                 <p className="section-label">セクション別ランク</p>
-                <h2>語彙補充の進捗</h2>
+                <h2>語彙補充 / 長文語句補充β の進捗</h2>
               </div>
-              <span className="pill pill-primary">{rankInfo.sectionRank.current}</span>
+              <span className="pill pill-primary">2セクション統合</span>
             </div>
-            <p className="lead-text">{rankInfo.sectionRank.label}</p>
-            <div className="progress-block">
-              <div className="progress-block-head">
-                <span>語彙セクション進捗</span>
-                <strong>{rankInfo.sectionRank.progressPercent}%</strong>
-              </div>
-              <div className="session-meter" aria-hidden="true">
-                <span className="session-meter-fill" style={{ width: `${rankInfo.sectionRank.progressPercent}%` }} />
-              </div>
-            </div>
-            <div className="stats-grid stats-grid-wide">
-              <article className="stat-card">
-                <p className="stat-label">学習済み語数</p>
-                <p className="stat-value">{rankInfo.sectionRank.attemptedQuestions}語</p>
-              </article>
-              <article className="stat-card">
-                <p className="stat-label">定着率</p>
-                <p className="stat-value">{rankInfo.sectionRank.masteryRate}%</p>
-              </article>
-              <article className="stat-card">
-                <p className="stat-label">復習対象</p>
-                <p className="stat-value">{rankInfo.sectionRank.dueCount}語</p>
-              </article>
-              <article className="stat-card">
-                <p className="stat-label">次の条件</p>
-                <p className="stat-value stat-text">{rankInfo.sectionRank.nextRequirement}</p>
-              </article>
+            <div className="section-rank-cards">
+              {rankInfo.sectionRanks.map((sectionRank) => (
+                <article key={sectionRank.section} className="section-rank-card">
+                  <div className="section-rank-head">
+                    <div>
+                      <p className="section-label">{sectionLabel(sectionRank.section)}</p>
+                      <h3>{sectionRank.current}</h3>
+                    </div>
+                    <span className="pill">{sectionRank.progressPercent}%</span>
+                  </div>
+                  <p className="lead-text">{sectionRank.label}</p>
+                  <div className="progress-block">
+                    <div className="progress-block-head">
+                      <span>{sectionLabel(sectionRank.section)}進捗</span>
+                      <strong>{sectionRank.progressPercent}%</strong>
+                    </div>
+                    <div className="session-meter" aria-hidden="true">
+                      <span className="session-meter-fill" style={{ width: `${sectionRank.progressPercent}%` }} />
+                    </div>
+                  </div>
+                  <div className="stats-grid stats-grid-wide">
+                    <article className="stat-card">
+                      <p className="stat-label">学習済み</p>
+                      <p className="stat-value">{sectionRank.attemptedQuestions}問</p>
+                    </article>
+                    <article className="stat-card">
+                      <p className="stat-label">定着率</p>
+                      <p className="stat-value">{sectionRank.masteryRate}%</p>
+                    </article>
+                    <article className="stat-card">
+                      <p className="stat-label">復習対象</p>
+                      <p className="stat-value">{sectionRank.dueCount}問</p>
+                    </article>
+                    <article className="stat-card">
+                      <p className="stat-label">次の条件</p>
+                      <p className="stat-value stat-text">{sectionRank.nextRequirement}</p>
+                    </article>
+                  </div>
+                </article>
+              ))}
             </div>
           </section>
 

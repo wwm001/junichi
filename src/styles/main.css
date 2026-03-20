@@ -147,3 +147,11 @@ h2 { margin-bottom: 0; font-size: 1.15rem; }
 .mini-test-intro-panel h3 { margin: 0; font-size: 1.2rem; color: #111827; }
 .mini-test-intro-text { margin: 0; line-height: 1.7; color: #374151; }
 .mini-test-intro-list { margin: 0; padding-left: 1.15rem; color: #4b5563; line-height: 1.7; }
+
+.recommendation-section { display:inline-flex; align-items:center; min-height:28px; padding:.24rem .65rem; border-radius:999px; font-size:.78rem; font-weight:800; }
+.recommendation-section.section-vocab-gap { background:#dbeafe; color:#1d4ed8; }
+.recommendation-section.section-long-gap { background:#ede9fe; color:#6d28d9; }
+.section-rank-cards { display:grid; gap:1rem; }
+.section-rank-card { border:1px solid #e5e7eb; background:#f8fafc; border-radius:18px; padding:1rem; display:grid; gap:.85rem; }
+.section-rank-head { display:flex; justify-content:space-between; gap:1rem; align-items:flex-start; }
+.section-rank-head h3 { margin:.15rem 0 0; font-size:1.35rem; }
